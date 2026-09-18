@@ -13,7 +13,7 @@ jobs:
       - name: Add web support
         run: flutter create . --platforms=web
       - run: flutter pub get
-      - run: flutter build web --release --base-href "/-ludo-admin/" --no-wasm-dry-run --no-wasm
+      - run: flutter build web --release --base-href "/-ludo-admin/" --no-wasm-dry-run
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
