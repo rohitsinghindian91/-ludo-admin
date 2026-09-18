@@ -10,9 +10,12 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+      - name: Add web support without overwriting your code
+        run: flutter create . --platforms=web
       - run: flutter pub get
       - run: flutter build web --release --base-href "/-ludo-admin/"
-      - uses: peaceiris/actions-gh-pages@v3
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build/web
