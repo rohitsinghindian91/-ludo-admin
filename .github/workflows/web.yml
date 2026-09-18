@@ -14,9 +14,9 @@ jobs:
           flutter-version: '3.24.5'
           channel: stable
       - run: |
-          cp lib/main.dart /tmp/m.dart
+          cp lib/main.dart /tmp/m.dart || true
           flutter create. --platforms=web --project-name ludo_admin
-          cp /tmp/m.dart lib/main.dart
+          cp /tmp/m.dart lib/main.dart || true
           flutter pub get
       - run: flutter build web --release --base-href "/-ludo-admin/"
       - uses: peaceiris/actions-gh-pages@v3
