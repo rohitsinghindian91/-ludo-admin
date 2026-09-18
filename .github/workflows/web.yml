@@ -11,11 +11,10 @@ jobs:
         with:
           flutter-version: '3.24.5'
           channel: stable
-      - run: flutter clean
-      - run: flutter create . --platforms=web
+      - run: flutter create . --platforms=web --project-name ludo_admin
       - run: flutter pub get
       - run: flutter build web --release --base-href "/-ludo-admin/"
-      - name: Deploy to gh-pages
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
