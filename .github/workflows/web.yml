@@ -9,10 +9,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.24.5'
           channel: stable
-      - name: Add web support
-        run: flutter create . --platforms=web
-      - run: flutter pub get
+      - run: flutter create . --platforms=web
+      - run: flutter pub upgrade
       - run: flutter build web --release --base-href "/-ludo-admin/" --no-wasm-dry-run
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
