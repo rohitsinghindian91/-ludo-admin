@@ -1,12 +1,2 @@
 import 'package:flutter/material.dart';
-void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: Scaffold(
-      backgroundColor: Colors.green[50],
-      body: Center(
-        child: Text("LUDO ADMIN PANEL WORKING ✅", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-      ),
-    ),
-  ));
-}
+void main() => runApp(const MaterialApp(home: Scaffold(body: Center(child: Text("LUDO ADMIN LINK IS LIVE ✅", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold))))));
