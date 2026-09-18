@@ -11,10 +11,11 @@ jobs:
         with:
           flutter-version: '3.24.5'
           channel: stable
-      - run: flutter create . --platforms=web
-      - run: flutter pub upgrade
-      - run: flutter build web --release --base-href "/-ludo-admin/" --no-wasm-dry-run
+      - run: flutter clean
+      - run: flutter pub get
+      - run: flutter build web --release --base-href "/-ludo-admin/" --no-wasm-dry-run -v
       - name: Deploy to gh-pages
+        if: success()
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
