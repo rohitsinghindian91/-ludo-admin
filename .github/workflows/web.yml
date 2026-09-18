@@ -1,0 +1,26 @@
+name: web
+on:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.5'
+          channel: stable
+      - run: |
+          if [! -f "web/index.html" ]; then
+            flutter create. --platforms=web
+          fi
+          flutter pub get
+      - run: flutter build web --release --base-href "/-ludo-admin/"
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir:./build/web
+          force_orphan: true
