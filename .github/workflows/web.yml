@@ -14,13 +14,12 @@ jobs:
           flutter-version: '3.24.5'
           channel: stable
       - run: |
-          if [! -f "web/index.html" ]; then
-            flutter create. --platforms=web
-          fi
+          cp lib/main.dart /tmp/m.dart
+          flutter create. --platforms=web --project-name ludo_admin
+          cp /tmp/m.dart lib/main.dart
           flutter pub get
       - run: flutter build web --release --base-href "/-ludo-admin/"
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir:./build/web
-          force_orphan: true
