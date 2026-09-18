@@ -1,11 +1,14 @@
 name: ludo_admin
 description: Ludo Admin Panel
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.0
 environment:
   sdk: '>=3.0.0 <4.0.0'
 dependencies:
   flutter:
     sdk: flutter
+  firebase_core: ^2.24.0
+  cloud_firestore: ^4.15.0
+  cupertino_icons: ^1.0.6
 flutter:
   uses-material-design: true
