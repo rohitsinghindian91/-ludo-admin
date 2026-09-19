@@ -6,35 +6,45 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const LudoAdmin());
+  runApp(MaterialApp(home: AdminPage()));
 }
 
-class LudoAdmin extends StatelessWidget {
-  const LudoAdmin({super.key});
+class AdminPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(title: const Text('LUDO PREMIUM ADMIN'), centerTitle: true, backgroundColor: Colors.deepPurple, foregroundColor: Colors.white),
-        body: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('withdrawals').orderBy('timestamp', descending: true).snapshots(),
-          builder: (context, snap) {
-            if (snap.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
-            if (!snap.hasData || snap.data!.docs.isEmpty) {
-              return const Center(child: Text('Koi withdraw request nahi hai\nGame se withdraw hoga to yaha UPI ID dikhega', textAlign: TextAlign.center));
-            }
-            return ListView(
-              padding: const EdgeInsets.all(12),
-              children: snap.data!.docs.map((doc) {
-                var d = doc.data() as Map<String, dynamic>;
-                return Card(
-                  child: ListTile(
-                    title: Text("₹${d['amount'] ?? '0'} - ${d['status'] ?? 'pending'}", style: const TextStyle(fontWeight: FontWeight.bold)),
-                    subtitle: Text("UPI: ${d['upiId'] ?? d['upi'] ?? 'N/A'}\nReferral: ${d['referralCode'] ?? ''}\nUser: ${d['userId'] ?? doc.id}"),
-                    isThreeLine: true,
-                    trailing: Wrap(children: [
-                      IconButton(icon: const Icon(Icons.check, color: Colors.green), onPressed: ()=> doc.reference.update({'status':'approved'})),
+    return Scaffold(
+      appBar: AppBar(title: Text('LUDO PREMIUM ADMIN'), backgroundColor: Colors.deepPurple),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection('users').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+          var docs = snapshot.data!.docs;
+          if (docs.isEmpty) return Center(child: Text('Koi user nahi hai'));
+          return ListView.builder(
+            itemCount: docs.length,
+            itemBuilder: (context, i) {
+              var data = docs[i].data() as Map<String, dynamic>;
+              bool isPremium = data['isPremium']?? false;
+              return ListTile(
+                title: Text(data['email']?? data['uid']?? 'User'),
+                subtitle: Text('Premium Expiry: ${data['premiumExpiry']?? "Not set"}'),
+                trailing: Switch(
+                  value: isPremium,
+                  onChanged: (val) {
+                    FirebaseFirestore.instance.collection('users').doc(docs[i].id).update({
+                      'isPremium': val,
+                      'premiumExpiry': val? DateTime.now().add(Duration(days: 30)).toString() : null,
+                    });
+                  },
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}                      IconButton(icon: const Icon(Icons.check, color: Colors.green), onPressed: ()=> doc.reference.update({'status':'approved'})),
                       IconButton(icon: const Icon(Icons.close, color: Colors.red), onPressed: ()=> doc.reference.update({'status':'rejected'})),
                     ]),
                   ),
