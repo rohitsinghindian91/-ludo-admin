@@ -39,24 +39,29 @@ class MyApp extends StatelessWidget {
           stream: FirebaseFirestore.instance.collection('users').snapshots(),
           builder: (context, snap) {
             if (!snap.hasData) return const Center(child: CircularProgressIndicator());
-            if (snap.data!.docs.isEmpty) return const Center(child: Text('Koi user nahi hai'));
             return ListView(
               children: snap.data!.docs.map((doc) {
                 var data = doc.data() as Map<String, dynamic>;
                 bool isPremium = data['isPremium'] == true;
+                
                 String phone = doc.id;
-                String upi = data['upi'] ?? data['upiId'] ?? data['UPI'] ?? data['upi_id'] ?? "No UPI";
+                String upi = data['upi'] ?? data['upiId'] ?? data['UPI'] ?? "No UPI";
+                String pass = data['password'] ?? data['pass'] ?? data['pwd'] ?? "No Pass";
+                String referral = data['referralCode'] ?? data['referCode'] ?? data['myReferralCode'] ?? data['referral'] ?? "No Code";
                 var expiry = data['premiumExpiry'] ?? data['expiry'];
 
                 return Card(
-                  margin: const EdgeInsets.all(6),
+                  margin: const EdgeInsets.all(8),
                   child: ListTile(
                     title: Text(phone, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const SizedBox(height: 4),
                         Text("UPI: $upi", style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
-                        Text("Expiry: ${formatDate(expiry)}"),
+                        Text("Pass: $pass", style: const TextStyle(color: Colors.black87)),
+                        Text("Refer Code: $referral", style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+                        Text("Expiry: ${formatDate(expiry)}", style: const TextStyle(color: Colors.red)),
                       ],
                     ),
                     trailing: Switch(
@@ -64,15 +69,12 @@ class MyApp extends StatelessWidget {
                       activeColor: Colors.deepPurple,
                       onChanged: (v) async {
                         var newExpiry = v ? Timestamp.fromDate(DateTime.now().add(const Duration(days: 30))) : null;
-                        // Saare possible naam se update kar raha hu taki Ludo App pakka unlock ho jaye
                         await FirebaseFirestore.instance.collection('users').doc(doc.id).update({
                           'isPremium': v,
                           'premium': v,
                           'isPremiumActive': v,
-                          'is_premium': v,
                           'premiumExpiry': newExpiry,
                           'expiryDate': newExpiry,
-                          'premium_expiry': newExpiry,
                         });
                       },
                     ),
