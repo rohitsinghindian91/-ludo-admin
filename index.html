@@ -132,14 +132,14 @@ small{color:#888}.section{display:none}.section.active{display:block}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, Timestamp, query, orderBy, where, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-// 👇 APNI ASLI FIREBASE CONFIG YAHAN DAALO
 const firebaseConfig = {
-  apiKey: "AIzaSyC3vGx...",
+  apiKey: "AIzaSyAdpsbH2w8T-iMh6pfBIBmjrgybXtgS9zY",
   authDomain: "ludo-premium-50-e427e.firebaseapp.com",
+  databaseURL: "https://ludo-premium-50-e427e-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "ludo-premium-50-e427e",
-  storageBucket: "ludo-premium-50-e427e.appspot.com",
-  messagingSenderId: "123",
-  appId: "1:123:web:abc"
+  storageBucket: "ludo-premium-50-e427e.firebasestorage.app",
+  messagingSenderId: "472725834005",
+  appId: "1:472725834005:web:cacf6803be22d6708e411c"
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -164,8 +164,13 @@ document.getElementById("banPhoto").addEventListener("change", e=>{
 
 async function init(){
   let snap;
-  try{ snap = await getDocs(query(collection(db,"users"), orderBy("createdAt","desc"))); }
-  catch(e){ snap = await getDocs(collection(db,"users")); }
+  try{
+    try{ snap = await getDocs(query(collection(db,"users"), orderBy("createdAt","desc"))); }
+    catch(e){ snap = await getDocs(collection(db,"users")); }
+  }catch(e2){
+    document.getElementById("tbody").innerHTML = `<tr><td colspan="6" style="color:#ef4444">❌ Firestore Error: ${e2.message}<br><small>Firebase config check karo — apiKey asli hai?</small></td></tr>`;
+    return;
+  }
   allUsers = []; snap.forEach(d=>allUsers.push({id:d.id,...d.data()}));
   const now = new Date();
   for(const u of allUsers){
