@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LUDO PREMIUM - FULL ADMIN (v7.2)</title>
+<title>LUDO PREMIUM - FULL ADMIN (v7.3)</title>
 <style>
 body{background:#0A0E1A;color:#fff;font-family:sans-serif;padding:10px;margin:0}
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
@@ -28,7 +28,7 @@ label{font-size:13px;color:#fbbf24;font-weight:bold}
 </style>
 </head>
 <body>
-<h2 style="margin:4px 0">🎮 LUDO PREMIUM - FULL ADMIN <span style="color:#22c55e">v7.2</span></h2>
+<h2 style="margin:4px 0">🎮 LUDO PREMIUM - FULL ADMIN <span style="color:#22c55e">v7.3</span></h2>
 <div id="jsStatus" style="font-size:12px;color:#fbbf24">⏳ JS load ho raha hai...</div>
 <div>Total: <span id="total">0</span> | Premium: <span id="prem">0</span> | Banned: <span id="banned">0</span> | Live Ludo: <span id="liveL">0</span> | Live Voice: <span id="liveV">0</span></div>
 
@@ -155,17 +155,28 @@ label{font-size:13px;color:#fbbf24;font-weight:bold}
 <button class="btn btn-unban" onclick="document.getElementById('powerModal').style.display='none'">Cancel</button>
 </div></div>
 
-<!-- ERROR CATCHER -->
+<!-- ERROR CATCHER - hamesha error dikhayega -->
 <script>
+window._errCount = 0;
 window.addEventListener('error', function(e){
-  var tb = document.getElementById("tbody");
-  if(tb &&!window._usersOK) tb.innerHTML = '<tr><td colspan="6" style="color:#ef4444">❌ JS Error:<br><b>'+(e.message||"unknown")+'</b><br><small>Screenshot bhejo</small></td></tr>';
+  window._errCount++;
+  var msg = e.message || "unknown";
   var st = document.getElementById("jsStatus");
-  if(st &&!window._usersOK){ st.style.color="#ef4444"; st.innerHTML = "❌ Error: "+(e.message||"unknown"); }
+  if(st){
+    if(window._usersOK){
+      st.style.color = "#fbbf24";
+      st.innerHTML = "⚠️ Users OK, lekin features me error: " + msg + "<br><small>Screenshot bhejo</small>";
+    } else {
+      var tb = document.getElementById("tbody");
+      if(tb) tb.innerHTML = '<tr><td colspan="6" style="color:#ef4444">❌ JS Error:<br><b>' + msg + '</b><br><small>Screenshot bhejo</small></td></tr>';
+      st.style.color = "#ef4444";
+      st.innerHTML = "❌ Error: " + msg;
+    }
+  }
 });
 </script>
 
-<!-- ===== MODULE 1: USERS (chhota, critical) ===== -->
+<!-- ===== MODULE 1: USERS ===== -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
@@ -235,9 +246,8 @@ init().catch(function(e){
 });
 </script>
 
-<!-- ===== MODULE 2: FEATURES (edit/ban/powers/chats/team/wallet) ===== -->
+<!-- ===== MODULE 2: FEATURES ===== -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, addDoc, Timestamp, query, orderBy, where, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 const db = window._db;
 let banTarget = null, banPhotoData = "", powTarget = null, editTarget = null;
@@ -314,9 +324,7 @@ window.saveEditUser = async function(){
     await setDoc(doc(db,"users",newMobile), copy);
     try {
       var teamSnap = await getDocs(query(collection(db,"users"), where("referredBy","==",editTarget)));
-      for(const d of teamSnap.docs){
-        await updateDoc(doc(db,"users",d.id), {referredBy:newMobile});
-      }
+      for(const d of teamSnap.docs){ await updateDoc(doc(db,"users",d.id), {referredBy:newMobile}); }
     } catch(e){}
     await deleteDoc(doc(db,"users",editTarget));
     location.reload();
