@@ -4,7 +4,7 @@ const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
 const RESOURCES = {"manifest.json": "f6f5141002cbbe1bfa43f0b2c548525e",
-"flutter_bootstrap.js": "9fcd882ddb89637e9949d1b1af51b41f",
+"flutter_bootstrap.js": "c37b36b58f3d3ea328f93cdd61b02392",
 "assets/AssetManifest.bin.json": "a1fee2517bf598633e2f67fcf3e26c94",
 "assets/AssetManifest.json": "99914b932bd37a50b983c5e7c90ae93b",
 "assets/NOTICES": "4c8b550b52f03723333353b9d2f419d4",
