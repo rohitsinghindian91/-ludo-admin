@@ -1,8 +1,29 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+</style>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LUDO PREMIUM - FULL ADMIN (v8.2)</title>
+<title>LUDO PREMIUM - FULL ADMIN (v8.5)</title>
 <style>
 body{background:#0A0E1A;color:#fff;font-family:sans-serif;padding:10px;margin:0}
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
@@ -28,9 +49,10 @@ label{font-size:13px;color:#fbbf24;font-weight:bold}
 </style>
 </head>
 <body>
-<h2 style="margin:4px 0">🎮 LUDO PREMIUM - FULL ADMIN <span style="color:#22c55e">v8.2</span></h2>
+<h2 style="margin:4px 0">🎮 LUDO PREMIUM - FULL ADMIN <span style="color:#22c55e">v8.5</span></h2>
 <div id="jsStatus" style="font-size:12px;color:#fbbf24">⏳ JS load ho raha hai...</div>
 <div>Total: <span id="total">0</span> | Premium: <span id="prem">0</span> | Banned: <span id="banned">0</span> | Live Ludo: <span id="liveL">0</span> | Live Voice: <span id="liveV">0</span></div>
+
 <div class="tabs">
 <button class="tab active" onclick="showTab('users',this)">👥 Users</button>
 <button class="tab" onclick="showTab('ludo',this)">🎲 Live Ludo</button>
@@ -42,13 +64,16 @@ label{font-size:13px;color:#fbbf24;font-weight:bold}
 <button class="tab" onclick="showTab('suchna',this)">📢 Suchna</button>
 <button class="tab" onclick="showTab('plan',this)">📊 Plan</button>
 </div>
+
 <div id="users" class="section active">
 <input id="search" placeholder="Search mobile / name / code / ID..." oninput="renderUsers()" style="max-width:300px">
 <button class="btn btn-y" onclick="checkDupIds()">🔍 Duplicate ID Check</button><div id="dupBody" style="margin-top:8px"></div>
 <table><thead><tr><th>#</th><th>User</th><th>Wallet/UPI</th><th>Premium</th><th>Ban</th><th>Action</th></tr></thead><tbody id="tbody"></tbody></table>
 </div>
+
 <div id="ludo" class="section"><h3>🎲 Live Ludo Rooms <button class="btn btn-y" onclick="loadLudo()">Refresh</button></h3><div id="ludoBody"></div></div>
 <div id="voice" class="section"><h3>🎤 Live Voice Rooms <button class="btn btn-y" onclick="loadVoice()">Refresh</button></h3><div id="voiceBody"></div></div>
+
 <div id="chats" class="section">
 <h3>💬 All Chats - sab users ke chats dekho</h3>
 <button class="tab" onclick="loadVoiceChats()">🎤 Voice Room Chat</button>
@@ -59,12 +84,15 @@ label{font-size:13px;color:#fbbf24;font-weight:bold}
 <div style="margin-top:8px"><input id="chatSearch" placeholder="Inbox: mobile likho (khali = sab)..." style="max-width:300px"></div>
 <div id="chatBody"></div>
 </div>
+
 <div id="team" class="section">
 <h3>🌳 Team Tree</h3>
 <input id="teamSearch" placeholder="user ka mobile..." style="max-width:300px">
 <button class="btn btn-y" onclick="loadTeam()">Dekho</button><div id="teamBody"></div>
 </div>
+
 <div id="premreq" class="section"><h3>💎 Premium Requests</h3><button class="btn btn-y" onclick="loadPremReq()">Refresh</button><div id="premBody"></div></div>
+
 <div id="wallet" class="section">
 <h3>💰 Wallet / UPI / History</h3>
 <button class="tab" onclick="loadEarnings()">Earnings</button>
@@ -73,12 +101,14 @@ label{font-size:13px;color:#fbbf24;font-weight:bold}
 <button class="tab" onclick="loadBanHist()">Ban History</button>
 <div id="walletBody"></div>
 </div>
+
 <div id="suchna" class="section">
 <h3>📢 Jaruri Suchna Editor</h3>
 <div class="card"><textarea id="suchnaText" rows="12" placeholder="Ek line me ek point..."></textarea>
 <button class="btn btn-true" onclick="saveSuchna()">SAVE</button>
 <button class="btn btn-y" onclick="loadSuchna()">Reload</button></div>
 </div>
+
 <div id="plan" class="section">
 <h3>📊 Plan Chart Config</h3>
 <div class="card">
@@ -89,23 +119,29 @@ label{font-size:13px;color:#fbbf24;font-weight:bold}
 <button class="btn btn-true" onclick="savePlan()">SAVE PLAN</button>
 <button class="btn btn-y" onclick="loadPlan()">Reload</button></div>
 </div>
+
+<!-- EDIT MODAL (FULL) -->
 <div class="modal" id="editModal"><div>
 <h3 style="color:#38bdf8">✏️ Edit User</h3>
 <div style="color:#888;font-size:12px;margin-bottom:8px">Editing: <b id="editTitle" style="color:#fff"></b></div>
 <label>Naam</label><input id="editName">
 <label>Gender</label><select id="editGender"><option value="">- select -</option><option value="male">male</option><option value="female">female</option><option value="other">other</option></select>
-<label>Mobile Number</label><input id="editMobile">
+<label>Mobile Number (badalne par naye number se login hoga)</label><input id="editMobile">
 <label>UPI ID</label><input id="editUpi">
-<label>Referral Code</label><input id="editRefCode">
-<label>Referred By</label><input id="editReferredBy">
+<label>Referral Code (user ka khud ka code)</label><input id="editRefCode">
+<label>Referred By (register time kiska code dala tha)</label><input id="editReferredBy">
 <label>Password</label><input id="editPassword">
-<label>ID Number (7 digit)</label>
+<label>ID Number (7 digit - friend search wali ID)</label>
 <div style="display:flex;gap:6px"><input id="editGameId" maxlength="7" style="flex:1;margin-bottom:0"><button type="button" class="btn btn-y" onclick="genUniqueId()" style="white-space:nowrap">🎲 Nayi ID</button></div>
+<small>Same ID do users ki kabhi nahi hogi - save karte time check ho jayega.</small>
 <div style="display:flex;gap:8px;margin-top:6px">
 <button class="btn btn-true" onclick="saveEditUser()">SAVE</button>
 <button class="btn btn-unban" onclick="document.getElementById('editModal').style.display='none'">Cancel</button>
 </div>
+<small>Naam badalne par user ke phone me thodi der me (app kholne par) update ho jayega.</small>
 </div></div>
+
+<!-- BAN MODAL -->
 <div class="modal" id="banModal"><div>
 <h3 id="banTitle" style="color:#fbbf24">BAN User</h3>
 <select id="banDur">
@@ -119,11 +155,13 @@ label{font-size:13px;color:#fbbf24;font-weight:bold}
 <button class="btn btn-ban" onclick="confirmBan()">BAN KARO</button>
 <button class="btn btn-unban" onclick="closeBan()">Cancel</button>
 </div></div>
+
+<!-- POWER MODAL -->
 <div class="modal" id="powerModal"><div>
 <h3 style="color:#fbbf24">Tag + Powers</h3>
 <label>Tag (ID ke neeche dikhega)</label>
 <input id="powTag" placeholder="VIP / OWNER / STAR">
-<label><b>Protect Powers</b></label>
+<label><b>Protect Powers (isko koi haath na lagaye)</b></label>
 <div id="powList">
 <label><input type="checkbox" value="no_kick">Koi kick nahi kar sakta</label>
 <label><input type="checkbox" value="no_mic_leave">Admin/Owner mic se nahi utar sakta</label>
@@ -139,34 +177,29 @@ label{font-size:13px;color:#fbbf24;font-weight:bold}
 <button class="btn btn-true" onclick="savePowers()">SAVE</button>
 <button class="btn btn-unban" onclick="document.getElementById('powerModal').style.display='none'">Cancel</button>
 </div></div>
+
+<!-- ERROR CATCHER -->
 <script>
 window.addEventListener('error', function(e){
-var msg = e.message || "unknown";
-var st = document.getElementById("jsStatus");
-if(st){
-if(window._usersOK){
-st.style.color = "#fbbf24";
-st.innerHTML = "⚠️ Users OK, lekin features me error: " + msg + "<br><small>Screenshot bhejo</small>";
-} else {
-var tb = document.getElementById("tbody");
-if(tb) tb.innerHTML = '<tr><td colspan="6" style="color:#ef4444">❌ JS Error:<br><b>' + msg + '</b><br><small>Screenshot bhejo</small></td></tr>';
-st.style.color = "#ef4444";
-st.innerHTML = "❌ Error: " + msg;
-}
-}
+  var tb = document.getElementById("tbody");
+  if(tb && !window._usersOK) tb.innerHTML = '<tr><td colspan="6" style="color:#ef4444">❌ JS Error:<br><b>'+(e.message||"unknown")+'</b><br><small>Screenshot bhejo</small></td></tr>';
+  var st = document.getElementById("jsStatus");
+  if(st && !window._usersOK){ st.style.color="#ef4444"; st.innerHTML = "❌ Error: "+(e.message||"unknown"); }
 });
 </script>
+
+<!-- ===== MODULE 1: USERS (chhota, critical) ===== -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 const firebaseConfig = {
-apiKey: "AIzaSyAdpsbH2w8T-iMh6pfBIBmjrgybXtgS9zY",
-authDomain: "ludo-premium-50-e427e.firebaseapp.com",
-databaseURL: "https://ludo-premium-50-e427e-default-rtdb.asia-southeast1.firebasedatabase.app",
-projectId: "ludo-premium-50-e427e",
-storageBucket: "ludo-premium-50-e427e.firebasestorage.app",
-messagingSenderId: "472725834005",
-appId: "1:472725834005:web:cacf6803be22d6708e411c"
+  apiKey: "AIzaSyAdpsbH2w8T-iMh6pfBIBmjrgybXtgS9zY",
+  authDomain: "ludo-premium-50-e427e.firebaseapp.com",
+  databaseURL: "https://ludo-premium-50-e427e-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "ludo-premium-50-e427e",
+  storageBucket: "ludo-premium-50-e427e.firebasestorage.app",
+  messagingSenderId: "472725834005",
+  appId: "1:472725834005:web:cacf6803be22d6708e411c"
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -175,328 +208,726 @@ window._app = app;
 let allUsers = [];
 window._allUsers = allUsers;
 async function init(){
-let snap;
-try { snap = await getDocs(query(collection(db,"users"), orderBy("createdAt","desc"))); }
-catch(e) { snap = await getDocs(collection(db,"users")); }
-allUsers = [];
-snap.forEach(function(d){ allUsers.push(Object.assign({id:d.id}, d.data())); });
-window._allUsers = allUsers;
-renderUsers();
-window._usersOK = true;
-document.getElementById("jsStatus").innerHTML = "✅ Sab OK - " + allUsers.length + " users loaded";
-document.getElementById("jsStatus").style.color = "#22c55e";
+  let snap;
+  try {
+    snap = await getDocs(query(collection(db,"users"), orderBy("createdAt","desc")));
+  } catch(e) {
+    snap = await getDocs(collection(db,"users"));
+  }
+  allUsers = [];
+  snap.forEach(function(d){ allUsers.push(Object.assign({id:d.id}, d.data())); });
+  window._allUsers = allUsers;
+  renderUsers();
+  window._usersOK = true;
+  document.getElementById("jsStatus").innerHTML = "✅ Sab OK - " + allUsers.length + " users loaded";
+  document.getElementById("jsStatus").style.color = "#22c55e";
 }
 window.renderUsers = function(){
-var s = document.getElementById("search").value.trim().toLowerCase();
-var tb = document.getElementById("tbody");
-var users = allUsers.filter(function(u){
-if(!s) return true;
-return (u.mobile||u.id||"").toLowerCase().indexOf(s) >= 0 ||
-(u.name||"").toLowerCase().indexOf(s) >= 0 ||
-(u.referralCode||"").toLowerCase().indexOf(s) >= 0 ||
-(u.gameId||"").toLowerCase().indexOf(s) >= 0;
-});
-document.getElementById("total").innerText = allUsers.length;
-document.getElementById("prem").innerText = allUsers.filter(function(u){return u.isPremium;}).length;
-document.getElementById("banned").innerText = allUsers.filter(function(u){return u.banned;}).length;
-var h = "";
-users.slice(0,200).forEach(function(u,i){
-var isBan = u.banned === true;
-h += "<tr" + (isBan? " style='background:#450a0a'" : "") + ">";
-h += "<td>" + (i+1) + "</td>";
-h += "<td><b>" + (u.name||"") + "</b><br>" + (u.mobile||u.id) + "<br><small>Code:<b style='color:#fbbf24'>" + (u.referralCode||u.id) + "</b> | By:" + (u.referredBy||"Direct") + "<br>ID:<b style='color:#38bdf8'>" + (u.gameId||"-") + "</b></small></td>";
-h += "<td>₹" + (u.wallet||0) + " <button class='btn btn-y' onclick=\"editWallet('" + u.id + "')\">✏️</button><br><small>" + (u.upi||"-") + "</small></td>";
-h += "<td class='" + (u.isPremium? "premium" : "free") + "'>" + (u.isPremium? "TRUE ✅" : "FALSE ❌") + "<br><button class='btn btn-true' onclick=\"setPremium('" + u.id + "',true)\">ON</button> <button class='btn btn-false' onclick=\"setPremium('" + u.id + "',false)\">OFF</button></td>";
-h += "<td><small>" + (isBan? (u.banType||"BAN") : "-") + "</small></td>";
-h += "<td><button class='btn btn-unban' onclick=\"openEdit('" + u.id + "')\">EDIT</button><br><button class='btn btn-y' onclick=\"openPowers('" + u.id + "')\">TAG/POWER</button><br>";
-if(isBan){ h += "<button class='btn btn-unban' onclick=\"unban('" + u.id + "')\">UNBAN</button>"; }
-else { h += "<button class='btn btn-ban' onclick=\"openBan('" + u.id + "','" + (u.mobile||u.id) + "')\">BAN</button>"; }
-h += "<br><button class='btn btn-false' onclick=\"deleteUser('" + u.id + "')\">🗑 DEL</button></td></tr>";
-});
-tb.innerHTML = h;
+  var s = document.getElementById("search").value.trim().toLowerCase();
+  var tb = document.getElementById("tbody");
+  var users = allUsers.filter(function(u){
+    if(!s) return true;
+    return (u.mobile||u.id||"").toLowerCase().indexOf(s) >= 0 ||
+           (u.name||"").toLowerCase().indexOf(s) >= 0 ||
+           (u.referralCode||"").toLowerCase().indexOf(s) >= 0 ||
+           (u.gameId||"").toLowerCase().indexOf(s) >= 0;
+  });
+  document.getElementById("total").innerText = allUsers.length;
+  document.getElementById("prem").innerText = allUsers.filter(function(u){return u.isPremium;}).length;
+  document.getElementById("banned").innerText = allUsers.filter(function(u){return u.banned;}).length;
+  var h = "";
+  users.slice(0,200).forEach(function(u,i){
+    var isBan = u.banned === true;
+    var pw = (u.powers||[]).length ? "<br><small style='color:#fbbf24'>⚡" + (u.powers||[]).length + " powers</small>" : "";
+    h += "<tr" + (isBan ? " style='background:#450a0a'" : "") + ">";
+    h += "<td>" + (i+1) + "</td>";
+    h += "<td><b>" + (u.name||"") + "</b><br>" + (u.mobile||u.id) + "<br><small>Code:<b style='color:#fbbf24'>" + (u.referralCode||u.id) + "</b> | By:" + (u.referredBy||"Direct") + "<br>ID:<b style='color:#38bdf8'>" + (u.gameId||"-") + "</b> | Gender:" + (u.gender||"-") + "<br>Tag:<b style='color:#fbbf24'>" + (u.tag||"-") + "</b>" + pw + "<br>Dev:" + ((u.deviceId||"").substring(0,10)||"-") + "</small></td>";
+    h += "<td>₹" + (u.wallet||0) + " <button class='btn btn-y' onclick=\"editWallet('" + u.id + "')\">✏️</button><br><small>" + (u.upi||"-") + "</small></td>";
+    h += "<td class='" + (u.isPremium ? "premium" : "free") + "'>" + (u.isPremium ? "TRUE ✅" : "FALSE ❌") + "<br><button class='btn btn-true' onclick=\"setPremium('" + u.id + "',true)\">ON</button> <button class='btn btn-false' onclick=\"setPremium('" + u.id + "',false)\">OFF</button></td>";
+    h += "<td><small>" + (isBan ? (u.banType||"BAN") : "-") + "</small></td>";
+    h += "<td><button class='btn btn-unban' onclick=\"openEdit('" + u.id + "')\">EDIT</button><br><button class='btn btn-y' onclick=\"openPowers('" + u.id + "')\">TAG/POWER</button><br>";
+    if(isBan){ h += "<button class='btn btn-unban' onclick=\"unban('" + u.id + "')\">UNBAN</button>"; }
+    else { h += "<button class='btn btn-ban' onclick=\"openBan('" + u.id + "','" + (u.mobile||u.id) + "')\">BAN</button>"; }
+    h += "<br><button class='btn btn-false' onclick=\"deleteUser('" + u.id + "')\">🗑 DEL</button></td>";
+    h += "</tr>";
+  });
+  tb.innerHTML = h;
 };
 init().catch(function(e){
-document.getElementById("tbody").innerHTML = "<tr><td colspan='6' style='color:#ef4444'>❌ Init: " + e.message + "</td></tr>";
+  document.getElementById("tbody").innerHTML = "<tr><td colspan='6' style='color:#ef4444'>❌ Init Error: " + e.message + "</td></tr>";
 });
 </script>
+
+<!-- ===== MODULE 2: FEATURES (edit/ban/powers/chats/team/wallet) ===== -->
 <script type="module">
-window.showTab = function(id, el){
-document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
-document.getElementById(id).classList.add('active');
-document.querySelectorAll('.tabs.tab').forEach(function(t){ t.classList.remove('active'); });
-if(el) el.classList.add('active');
-try {
-if(id==='ludo' && typeof loadLudo==='function') loadLudo();
-if(id==='voice' && typeof loadVoice==='function') loadVoice();
-if(id==='premreq' && typeof loadPremReq==='function') loadPremReq();
-if(id==='suchna' && typeof loadSuchna==='function') loadSuchna();
-if(id==='plan' && typeof loadPlan==='function') loadPlan();
-} catch(e){}
-};
-import { getApp, initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, addDoc, Timestamp, query, orderBy, where, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
-let db = null;
-let _appRef = null;
-try {
-try { _appRef = getApp(); }
-catch(e) {
-_appRef = initializeApp({apiKey:"AIzaSyAdpsbH2w8T-iMh6pfBIBmjrgybXtgS9zY",authDomain:"ludo-premium-50-e427e.firebaseapp.com",databaseURL:"https://ludo-premium-50-e427e-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"ludo-premium-50-e427e",storageBucket:"ludo-premium-50-e427e.firebasestorage.app",messagingSenderId:"472725834005",appId:"1:472725834005:web:cacf6803be22d6708e411c"}, "mod2backup");
-}
-db = getFirestore(_appRef);
-} catch(e) {}
+const db = window._db;
 let banTarget = null, banPhotoData = "", powTarget = null, editTarget = null;
 function AU(){ return window._allUsers || []; }
 function RU(){ if(window.renderUsers) window.renderUsers(); }
 let _rtdb = null;
 async function getRtdb(){
-if(_rtdb) return _rtdb;
-const m = await import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js");
-_rtdb = { getDatabase: m.getDatabase, ref: m.ref, get: m.get, child: m.child, remove: m.remove, db: m.getDatabase(_appRef) };
-return _rtdb;
+  if(_rtdb) return _rtdb;
+  const m = await import("https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js");
+  _rtdb = { getDatabase: m.getDatabase, ref: m.ref, get: m.get, child: m.child, remove: m.remove, db: m.getDatabase(_app2) };
+  return _rtdb;
 }
+window.showTab = function(id, el){
+  document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tabs .tab').forEach(function(t){ t.classList.remove('active'); });
+  if(el) el.classList.add('active');
+  if(id==='ludo') loadLudo();
+  if(id==='voice') loadVoice();
+  if(id==='premreq') loadPremReq();
+  if(id==='suchna') loadSuchna();
+  if(id==='plan') loadPlan();
+};
 var _bp = document.getElementById("banPhoto");
 if(_bp) _bp.addEventListener("change", function(e){
-var f = e.target.files[0]; if(!f) return;
-var r = new FileReader();
-r.onload = function(ev){ banPhotoData = ev.target.result; var p = document.getElementById("banPreview"); p.src = banPhotoData; p.style.display = "block"; };
-r.readAsDataURL(f);
+  var f = e.target.files[0]; if(!f) return;
+  var r = new FileReader();
+  r.onload = function(ev){ banPhotoData = ev.target.result; var p = document.getElementById("banPreview"); p.src = banPhotoData; p.style.display = "block"; };
+  r.readAsDataURL(f);
 });
 window.openEdit = function(id){
-var u = AU().find(function(x){ return x.id===id; }); if(!u) return;
-editTarget = id;
-document.getElementById("editTitle").innerText = id;
-document.getElementById("editName").value = u.name||"";
-document.getElementById("editGender").value = u.gender||"";
-document.getElementById("editMobile").value = u.mobile||id;
-document.getElementById("editUpi").value = u.upi||"";
-document.getElementById("editRefCode").value = u.referralCode||"";
-document.getElementById("editReferredBy").value = (u.referredBy==="Direct"? "" : u.referredBy)||"";
-document.getElementById("editPassword").value = u.password||"";
-document.getElementById("editGameId").value = u.gameId||"";
-document.getElementById("editModal").style.display = "flex";
+  var u = AU().find(function(x){ return x.id===id; }); if(!u) return;
+  editTarget = id;
+  document.getElementById("editTitle").innerText = id;
+  document.getElementById("editName").value = u.name||"";
+  document.getElementById("editGender").value = u.gender||"";
+  document.getElementById("editMobile").value = u.mobile||id;
+  document.getElementById("editUpi").value = u.upi||"";
+  document.getElementById("editRefCode").value = u.referralCode||"";
+  document.getElementById("editReferredBy").value = (u.referredBy==="Direct" ? "" : u.referredBy)||"";
+  document.getElementById("editPassword").value = u.password||"";
+  document.getElementById("editGameId").value = u.gameId||"";
+  document.getElementById("editModal").style.display = "flex";
 };
 window.saveEditUser = async function(){
-if(!db){ alert("Firebase not ready"); return; }
-var u = AU().find(function(x){ return x.id===editTarget; }); if(!u) return;
-var newMobile = document.getElementById("editMobile").value.trim();
-if(!newMobile){ alert("Mobile khali nahi ho sakta"); return; }
-var data = {name:document.getElementById("editName").value.trim(),gender:document.getElementById("editGender").value,mobile:newMobile,upi:document.getElementById("editUpi").value.trim(),referralCode:document.getElementById("editRefCode").value.trim()||newMobile,referredBy:document.getElementById("editReferredBy").value.trim()||"Direct",password:document.getElementById("editPassword").value,gameId:document.getElementById("editGameId").value.trim()};
-await updateDoc(doc(db,"users",editTarget), Object.assign({}, data, {updatedAt:serverTimestamp()}));
-Object.assign(u, data);
-document.getElementById("editModal").style.display = "none";
-RU(); alert("Save ✅");
+  var allUsers = AU();
+  var u = allUsers.find(function(x){ return x.id===editTarget; }); if(!u) return;
+  var newMobile = document.getElementById("editMobile").value.trim();
+  if(!newMobile){ alert("Mobile khali nahi ho sakta"); return; }
+  var newRefCode = document.getElementById("editRefCode").value.trim();
+  if(!newRefCode) newRefCode = newMobile;
+  var data = {
+    name: document.getElementById("editName").value.trim(),
+    gender: document.getElementById("editGender").value,
+    mobile: newMobile,
+    upi: document.getElementById("editUpi").value.trim(),
+    referralCode: newRefCode,
+    referredBy: document.getElementById("editReferredBy").value.trim()||"Direct",
+    password: document.getElementById("editPassword").value,
+    gameId: document.getElementById("editGameId").value.trim()
+  };
+  if(data.gameId){
+    var dup = allUsers.find(function(x){ return x.id!==editTarget && (String(x.gameId||"")===data.gameId || String(x.voiceRoomNo||"")===data.gameId); });
+    if(dup){ alert("❌ Ye ID (" + data.gameId + ") pehle se " + (dup.name||"") + " ke paas hai!"); return; }
+  }
+  if(newMobile !== editTarget){
+    if(!confirm("Mobile badal rahe ho!\n" + editTarget + " → " + newMobile + "\nPakka?")) return;
+    var chk = await getDoc(doc(db,"users",newMobile));
+    if(chk.exists()){ alert("❌ Is number par pehle se account hai!"); return; }
+    var copy = Object.assign({}, u, data);
+    delete copy.id;
+    if(copy.referralCode===editTarget) copy.referralCode = newMobile;
+    copy.updatedAt = serverTimestamp();
+    await setDoc(doc(db,"users",newMobile), copy);
+    try {
+      var teamSnap = await getDocs(query(collection(db,"users"), where("referredBy","==",editTarget)));
+      for(const d of teamSnap.docs){
+        await updateDoc(doc(db,"users",d.id), {referredBy:newMobile});
+      }
+    } catch(e){}
+    await deleteDoc(doc(db,"users",editTarget));
+    location.reload();
+  } else {
+    await updateDoc(doc(db,"users",editTarget), Object.assign({}, data, {updatedAt:serverTimestamp()}));
+    Object.assign(u, data);
+    document.getElementById("editModal").style.display = "none";
+    RU(); alert("Save ✅");
+  }
 };
 window.genUniqueId = function(){
-var allUsers = AU(), nid = "";
-for(var t=0; t<60; t++){ nid = String(Math.floor(1000000 + Math.random()*9000000)); if(!allUsers.some(function(x){ return x.id!==editTarget && (String(x.gameId||"")===nid || String(x.voiceRoomNo||"")===nid); })) break; }
-document.getElementById("editGameId").value = nid;
+  var allUsers = AU(), nid = "";
+  for(var t=0; t<60; t++){
+    nid = String(Math.floor(1000000 + Math.random()*9000000));
+    if(!allUsers.some(function(x){ return x.id!==editTarget && (String(x.gameId||"")===nid || String(x.voiceRoomNo||"")===nid); })) break;
+  }
+  document.getElementById("editGameId").value = nid;
 };
 window.checkDupIds = function(){
-var b = document.getElementById("dupBody"); b.innerHTML = "Checking...";
-var seen = {}, dups = [];
-AU().forEach(function(u){ [["gameId",u.gameId],["voiceRoomNo",u.voiceRoomNo]].forEach(function(pair){ var f=pair[0], v=String(pair[1]||"").trim(); if(!v) return; var k=f+":"+v; if(seen[k]) dups.push({v:v,bid:u.id}); else seen[k]=1; }); });
-b.innerHTML = dups.length? "<b style='color:#ef4444'>❌ "+dups.length+" duplicate!</b>" : "<b style='color:#22c55e'>✅ Sab unique</b>";
+  var allUsers = AU();
+  var b = document.getElementById("dupBody"); b.innerHTML = "Checking...";
+  var seen = {}, dups = [];
+  allUsers.forEach(function(u){
+    [["gameId",u.gameId],["voiceRoomNo",u.voiceRoomNo]].forEach(function(pair){
+      var f = pair[0], v = String(pair[1]||"").trim(); if(!v) return;
+      var k = f + ":" + v;
+      if(seen[k]) dups.push({v:v, f:f, bid:u.id, bname:(u.name||"")+" ("+(u.mobile||u.id)+")", aname:seen[k].name});
+      else seen[k] = {name:(u.name||"")+" ("+(u.mobile||u.id)+")"};
+    });
+  });
+  if(!dups.length){ b.innerHTML = "<div class='card' style='border-color:#22c55e'><b style='color:#22c55e'>✅ Sab IDs unique hain</b></div>"; return; }
+  var h = "<div class='card' style='border-color:#ef4444'><b style='color:#ef4444'>❌ " + dups.length + " duplicate ID mile!</b></div>";
+  dups.forEach(function(d){
+    h += "<div class='card'><b>ID: " + d.v + "</b> <small>(" + d.f + ")</small><br><small>👤 " + d.aname + "<br>👤 " + d.bname + "</small><br><button class='btn btn-y' onclick=\"fixDupId('" + d.bid + "','" + d.f + "')\">🎲 Nayi unique ID do</button></div>";
+  });
+  b.innerHTML = h;
 };
-window.deleteUser = async function(id){ if(!db){ alert("Firebase not ready"); return; } if(!confirm("DELETE "+id+"?")) return; if(!confirm("Pakka?")) return; await deleteDoc(doc(db,"users",id)); location.reload(); };
-window.editWallet = async function(id){ if(!db){ alert("Firebase not ready"); return; } var u = AU().find(function(x){ return x.id===id; }); if(!u) return; var v = prompt("Wallet amount? (abhi: ₹"+(u.wallet||0)+")", u.wallet||0); if(v===null) return; await updateDoc(doc(db,"users",id), {wallet:parseFloat(v)||0}); u.wallet = parseFloat(v)||0; RU(); };
-window.openPowers = function(id){ var u = AU().find(function(x){ return x.id===id; }); if(!u) return; powTarget = id; document.getElementById("powTag").value = u.tag||""; var have = u.powers||[]; document.querySelectorAll("#powList input").forEach(function(c){ c.checked = have.indexOf(c.value) >= 0; }); document.getElementById("powerModal").style.display = "flex"; };
-window.savePowers = async function(){ if(!db){ alert("Firebase not ready"); return; } var tag = document.getElementById("powTag").value.trim(); var powers = []; document.querySelectorAll("#powList input:checked").forEach(function(c){ powers.push(c.value); }); await updateDoc(doc(db,"users",powTarget), {tag:tag, powers:powers}); var u = AU().find(function(x){ return x.id===powTarget; }); if(u){ u.tag = tag; u.powers = powers; } document.getElementById("powerModal").style.display = "none"; RU(); alert("Save ✅"); };
-window.openBan = function(id,m){ banTarget = id; banPhotoData = ""; document.getElementById("banPreview").style.display = "none"; document.getElementById("banReason").value = ""; document.getElementById("banTitle").innerText = "BAN: " + m; document.getElementById("banModal").style.display = "flex"; };
+window.fixDupId = async function(id, field){
+  var allUsers = AU(), nid = "";
+  for(var t=0; t<60; t++){
+    nid = String(Math.floor(1000000 + Math.random()*9000000));
+    if(!allUsers.some(function(x){ return String(x.gameId||"")===nid || String(x.voiceRoomNo||"")===nid; })) break;
+  }
+  if(!nid){ alert("Nayi ID nahi ban payi"); return; }
+  var up = {}; up[field] = nid;
+  await updateDoc(doc(db,"users",id), up);
+  RU(); checkDupIds();
+  alert("✅ Nayi unique ID: " + nid);
+};
+window.deleteUser = async function(id){
+  if(!confirm("⚠️ " + id + " ko DELETE karna hai?")) return;
+  if(!confirm("Pakka? Data wapas NAHI aayega!")) return;
+  await deleteDoc(doc(db,"users",id));
+  location.reload();
+};
+window.editWallet = async function(id){
+  var u = AU().find(function(x){ return x.id===id; }); if(!u) return;
+  var v = prompt("Wallet me kitna set karna hai? (abhi: ₹" + (u.wallet||0) + ")", u.wallet||0);
+  if(v===null) return;
+  var amt = parseFloat(v)||0;
+  await updateDoc(doc(db,"users",id), {wallet:amt});
+  u.wallet = amt; RU();
+};
+window.openPowers = function(id){
+  var u = AU().find(function(x){ return x.id===id; }); if(!u) return;
+  powTarget = id;
+  document.getElementById("powTag").value = u.tag||"";
+  var have = u.powers||[];
+  document.querySelectorAll("#powList input").forEach(function(c){ c.checked = have.indexOf(c.value) >= 0; });
+  document.getElementById("powerModal").style.display = "flex";
+};
+window.savePowers = async function(){
+  var tag = document.getElementById("powTag").value.trim();
+  var powers = [];
+  document.querySelectorAll("#powList input:checked").forEach(function(c){ powers.push(c.value); });
+  await updateDoc(doc(db,"users",powTarget), {tag:tag, powers:powers});
+  var u = AU().find(function(x){ return x.id===powTarget; });
+  if(u){ u.tag = tag; u.powers = powers; }
+  document.getElementById("powerModal").style.display = "none";
+  RU(); alert("Tag + Powers save ✅");
+};
+window.openBan = function(id,m){
+  banTarget = id; banPhotoData = "";
+  document.getElementById("banPreview").style.display = "none";
+  document.getElementById("banReason").value = "";
+  var f = document.getElementById("banPhoto"); if(f) f.value = "";
+  document.getElementById("banTitle").innerText = "BAN: " + m;
+  document.getElementById("banModal").style.display = "flex";
+};
 window.closeBan = function(){ document.getElementById("banModal").style.display = "none"; };
-window.confirmBan = async function(){ if(!db){ alert("Firebase not ready"); return; } var dur = document.getElementById("banDur").value, reason = document.getElementById("banReason").value.trim(); if(!reason){ alert("Reason likho"); return; } var banExpiry = null; if(!isNaN(parseInt(dur))){ var d = new Date(); d.setDate(d.getDate()+parseInt(dur)); banExpiry = Timestamp.fromDate(d); } await updateDoc(doc(db,"users",banTarget), {banned:true, banType:dur, banReason:reason, banExpiry:banExpiry, bannedAt:serverTimestamp()}); await addDoc(collection(db,"ban_history"), {mobile:banTarget, banType:dur, reason:reason, photo:banPhotoData||"", time:serverTimestamp(), by:"admin", banExpiry:banExpiry}); document.getElementById("banModal").style.display = "none"; location.reload(); };
-window.unban = async function(id){ if(!db){ alert("Firebase not ready"); return; } if(!confirm("UNBAN?")) return; await updateDoc(doc(db,"users",id), {banned:false, banExpiry:null, banType:null}); location.reload(); };
-window.setPremium = async function(id,val){ if(!db){ alert("Firebase not ready"); return; } if(!confirm(val? "Premium ON?" : "Premium OFF?")) return; var exp = new Date(); exp.setMonth(exp.getMonth()+1); if(val){ await updateDoc(doc(db,"users",id), {isPremium:true, premiumExpiry:Timestamp.fromDate(exp)}); await addDoc(collection(db,"premium_history"), {mobile:id, action:"premium_on", time:serverTimestamp(), by:"admin"}); } else { await updateDoc(doc(db,"users",id), {isPremium:false, premiumExpiry:null}); await addDoc(collection(db,"premium_history"), {mobile:id, action:"premium_off", time:serverTimestamp(), by:"admin"}); } location.reload(); };
-window.loadLudo = async function(){ var b = document.getElementById("ludoBody"); b.innerHTML = "Loading..."; try { var R = await getRtdb(); var snap = await R.get(R.child(R.ref(R.db), "/")); var val = snap.val()||{}; var h = ""; Object.keys(val).forEach(function(k){ if(/^\d{4}$/.test(k)) h += "<div class='card'><b>🎲 Room: "+k+"</b><br><button class='btn btn-false' onclick=\"deleteRoom('"+k+"')\">🗑 DELETE</button></div>"; }); b.innerHTML = h || "Koi live room nahi"; } catch(e){ b.innerHTML = "Error: " + e.message; } };
-window.deleteRoom = async function(rid){ if(!confirm("Room "+rid+" DELETE?")) return; var R = await getRtdb(); await R.remove(R.ref(R.db, rid)); alert("Delete ✅"); loadLudo(); };
-window.loadVoice = async function(){ var b = document.getElementById("voiceBody"); b.innerHTML = "Loading..."; try { var R = await getRtdb(); var snap = await R.get(R.child(R.ref(R.db), "/")); var val = snap.val()||{}; var h = ""; ["vRoomList","vRooms","voiceRooms","voice_rooms"].forEach(function(pk){ var vr = val[pk]||{}; Object.keys(vr).forEach(function(id){ h += "<div class='card'><b>🎤 "+id+"</b><br><button class='btn btn-false' onclick=\"deleteVoiceRoom('"+pk+"','"+id+"')\">🗑 DELETE</button></div>"; }); }); b.innerHTML = h || "Koi voice room nahi"; } catch(e){ b.innerHTML = "Error: " + e.message; } };
-window.deleteVoiceRoom = async function(parent,rid){ if(!confirm("Delete "+rid+"?")) return; var R = await getRtdb(); await R.remove(R.ref(R.db, parent+"/"+rid)); alert("Delete ✅"); loadVoice(); };
+window.confirmBan = async function(){
+  var dur = document.getElementById("banDur").value, reason = document.getElementById("banReason").value.trim();
+  if(!reason){ alert("Reason likho"); return; }
+  var banExpiry = null, now = new Date();
+  if(!isNaN(parseInt(dur))){ var d = new Date(now); d.setDate(d.getDate()+parseInt(dur)); banExpiry = Timestamp.fromDate(d); }
+  await updateDoc(doc(db,"users",banTarget), {banned:true, banType:dur, banReason:reason, banExpiry:banExpiry, bannedAt:serverTimestamp()});
+  await addDoc(collection(db,"ban_history"), {mobile:banTarget, banType:dur, reason:reason, photo:banPhotoData||"", time:serverTimestamp(), by:"admin", banExpiry:banExpiry});
+  document.getElementById("banModal").style.display = "none";
+  location.reload();
+};
+window.unban = async function(id){
+  if(!confirm("UNBAN?")) return;
+  await updateDoc(doc(db,"users",id), {banned:false, banExpiry:null, banType:null});
+  location.reload();
+};
+window.setPremium = async function(id,val){
+  if(!confirm(val ? "Premium ON?" : "Premium OFF?")) return;
+  var exp = new Date(); exp.setMonth(exp.getMonth()+1);
+  if(val){
+    await updateDoc(doc(db,"users",id), {isPremium:true, premiumExpiry:Timestamp.fromDate(exp)});
+    await addDoc(collection(db,"premium_history"), {mobile:id, action:"premium_on", time:serverTimestamp(), by:"admin"});
+  } else {
+    await updateDoc(doc(db,"users",id), {isPremium:false, premiumExpiry:null});
+    await addDoc(collection(db,"premium_history"), {mobile:id, action:"premium_off", time:serverTimestamp(), by:"admin"});
+  }
+  location.reload();
+};
+window.loadLudo = async function(){
+  var b = document.getElementById("ludoBody"); b.innerHTML = "Loading...";
+  try {
+    var R = await getRtdb();
+    var snap = await R.get(R.child(R.ref(R.db), "/"));
+    var val = snap.val()||{};
+    var rooms = [];
+    for(const k of Object.keys(val)){ if(/^\d{4}$/.test(k)) rooms.push({id:k, data:val[k]}); }
+    document.getElementById("liveL").innerText = rooms.length;
+    var h = "";
+    rooms.forEach(function(r){
+      h += "<div class='card'><b>🎲 Room: " + r.id + "</b><br><button class='btn btn-false' onclick=\"deleteRoom('" + r.id + "')\">🗑 ROOM DELETE</button></div>";
+    });
+    b.innerHTML = h || "Koi live room nahi";
+  } catch(e){ b.innerHTML = "Error: " + e.message; }
+};
+window.deleteRoom = async function(rid){
+  if(!confirm("Room " + rid + " DELETE karna hai?")) return;
+  var R = await getRtdb();
+  await R.remove(R.ref(R.db, rid));
+  alert("Room delete ✅"); loadLudo();
+};
+window.loadVoice = async function(){
+  var b = document.getElementById("voiceBody"); b.innerHTML = "Loading...";
+  try {
+    var R = await getRtdb();
+    var snap = await R.get(R.child(R.ref(R.db), "/"));
+    var val = snap.val()||{};
+    var rooms = [];
+    ["vRoomList","vRooms","voiceRooms","voice_rooms"].forEach(function(k){
+      if(val[k]){ var o = val[k]; Object.keys(o).forEach(function(id){ rooms.push({id:id, parent:k}); }); }
+    });
+    document.getElementById("liveV").innerText = rooms.length;
+    var h = "";
+    rooms.forEach(function(r){
+      h += "<div class='card'><b>🎤 Room: " + r.id + "</b><br><button class='btn btn-false' onclick=\"deleteVoiceRoom('" + r.parent + "','" + r.id + "')\">🗑 DELETE</button></div>";
+    });
+    b.innerHTML = h || "Koi live voice room nahi";
+  } catch(e){ b.innerHTML = "Error: " + e.message; }
+};
+window.deleteVoiceRoom = async function(parent,rid){
+  if(!confirm("Voice room " + rid + " DELETE karna hai?")) return;
+  var R = await getRtdb();
+  await R.remove(R.ref(R.db, parent + "/" + rid));
+  alert("Delete ✅"); loadVoice();
+};
 window.loadVoiceChats = async function(){
-var b = document.getElementById("chatBody"); b.innerHTML = "Loading voice chats...";
-try {
-var R = await getRtdb(); var snap = await R.get(R.child(R.ref(R.db), "/")); var val = snap.val()||{}; var h = "";
-["vRoomList","vRooms","voiceRooms","voice_rooms","voice_rooms_list","rooms_voice","v_rooms"].forEach(function(pk){
-var vr = val[pk]||{}; Object.keys(vr).forEach(function(roomNo){
-var room = vr[roomNo]||{}; var chatObj = room["chat"] || room["chats"] || room["messages"] || room["msgs"];
-if(!chatObj) return;
-var msgs = Object.values(chatObj).filter(function(m){ return m && (m.text||m.msg||m.message); });
-if(!msgs.length) return;
-h += "<div class='card'><b>🎤 Voice Room: "+roomNo+"</b> ("+msgs.length+" msgs)<br>";
-msgs.slice(-30).forEach(function(m){ h += "<small style='color:#fbbf24'>"+(m.name||m.player||"")+":</small> "+(m.text||m.msg||m.message||"")+"<br>"; });
-h += "</div>";
-});
-});
-b.innerHTML = h || "<div class='card'><b>❌ Koi voice chat nahi mili</b></div>";
-} catch(e){ b.innerHTML = "Error: " + e.message; }
+  var b = document.getElementById("chatBody"); b.innerHTML = "Loading...";
+  try {
+    var R = await getRtdb();
+    var snap = await R.get(R.child(R.ref(R.db), "/"));
+    var val = snap.val()||{};
+    var h = "";
+    ["vRoomList","vRooms","voiceRooms","voice_rooms"].forEach(function(pk){
+      var vr = val[pk]||{};
+      Object.keys(vr).forEach(function(roomNo){
+        var room = vr[roomNo]||{};
+        if(!room["chat"]) return;
+        var msgs = Object.values(room["chat"]);
+        if(!msgs.length) return;
+        h += "<div class='card'><b>🎤 Voice Room: " + roomNo + "</b> (" + msgs.length + " msgs)<br>";
+        msgs.slice(-30).forEach(function(m){
+          var pv = m.imageUrl || m.photoUrl || m.photo || "";
+          var tv = m.text||m.msg||m.message||"";
+          var phv = pv ? "<br><a href='"+pv+"' target='_blank'><img src='"+pv+"' style='max-width:120px;max-height:120px;border-radius:8px'></a>" : "";
+          h += "<small style='color:#fbbf24'>" + (m.name||m.player||"") + ":</small> " + tv + phv + "<br>";
+        });
+        h += "</div>";
+      });
+    });
+    b.innerHTML = h || "Koi voice chat nahi";
+  } catch(e){ b.innerHTML = "Error: " + e.message; }
 };
 window.loadLudoChats = async function(){
-var b = document.getElementById("chatBody"); b.innerHTML = "Loading ludo chats...";
-try {
-var R = await getRtdb(); var snap = await R.get(R.child(R.ref(R.db), "/")); var val = snap.val()||{}; var h = "";
-Object.keys(val).forEach(function(k){
-if(!/^[A-Za-z0-9]{4,8}$/.test(k)) return;
-if(["vRoomList","vRooms","voiceRooms","voice_rooms"].indexOf(k) >= 0) return;
-var roomData = val[k]||{}; if(typeof roomData!== 'object') return;
-var chat = roomData["chat"] || roomData["chats"] || roomData["messages"] || roomData["msgs"] || {};
-var allMsgs = Object.values(chat); if(!allMsgs.length) return;
-var userMsgs = allMsgs.filter(function(m){ return m && (m.msg||m.text||m.message); });
-if(!userMsgs.length) return;
-h += "<div class='card'><b>🎲 Ludo Room: "+k+"</b> ("+userMsgs.length+" msgs)<br>";
-userMsgs.slice(-30).forEach(function(m){ h += "<small style='color:#fbbf24'>"+(m.player||m.name||m.from||"")+":</small> "+(m.msg||m.text||m.message||"")+"<br>"; });
-h += "</div>";
-});
-b.innerHTML = h || "<div class='card'><b>❌ Koi ludo chat nahi mili</b></div>";
-} catch(e){ b.innerHTML = "Error: " + e.message; }
+  var b = document.getElementById("chatBody"); b.innerHTML = "Loading...";
+  try {
+    var R = await getRtdb();
+    var snap = await R.get(R.child(R.ref(R.db), "/"));
+    var val = snap.val()||{};
+    var h = "";
+    Object.keys(val).forEach(function(k){
+      if(!/^\d{4}$/.test(k)) return;
+      var chat = ((val[k]||{})["chat"])||{};
+      var msgs = Object.values(chat).filter(function(m){ return m && m.player && m.player!=="System"; });
+      if(!msgs.length) return;
+      h += "<div class='card'><b>🎲 Ludo Room: " + k + "</b> (" + msgs.length + " msgs)<br>";
+      msgs.slice(-30).forEach(function(m){
+        var pl = m.imageUrl || m.photoUrl || m.photo || "";
+        var tl = m.msg||m.text||m.message||"";
+        var phl = pl ? "<br><a href='"+pl+"' target='_blank'><img src='"+pl+"' style='max-width:120px;max-height:120px;border-radius:8px'></a>" : "";
+        h += "<small style='color:#fbbf24'>" + (m.player||m.name||"") + ":</small> " + tl + phl + "<br>";
+      });
+      h += "</div>";
+    });
+    b.innerHTML = h || "Koi ludo chat nahi";
+  } catch(e){ b.innerHTML = "Error: " + e.message; }
 };
 window.loadChats = async function(){
-var b = document.getElementById("chatBody");
-var mobFilter = document.getElementById("chatSearch").value.trim();
-b.innerHTML = "Loading friend chats...";
-try {
-var h = "";
-var csnap = await getDocs(collection(db, "friend_chats"));
-var chatDocs = [];
-csnap.forEach(function(d){ chatDocs.push(d); });
-if(mobFilter){ chatDocs = chatDocs.filter(function(d){ return d.id.indexOf(mobFilter) >= 0; }); }
-if(!chatDocs.length){ b.innerHTML = "<div class='card'>❌ Koi friend chat nahi mili</div>"; return; }
-h += "<div class='card'><b>💬 "+chatDocs.length+" friend chats mili</b></div>";
-for(const d of chatDocs){
-var chatId = d.id;
-var parts = chatId.split("_");
-var user1 = parts[0]||"", user2 = parts[1]||"";
-var name1 = user1, name2 = user2;
-try {
-var u1 = await getDoc(doc(db, "users", user1));
-if(u1.exists()) name1 = u1.data().name || user1;
-var u2 = await getDoc(doc(db, "users", user2));
-if(u2.exists()) name2 = u2.data().name || user2;
-} catch(e){}
-var msnap;
-try { msnap = await getDocs(query(collection(db, "friend_chats", chatId, "messages"), orderBy("time", "asc"), limit(100))); }
-catch(e){ msnap = await getDocs(query(collection(db, "friend_chats", chatId, "messages"), limit(100))); }
-var msgs = [];
-msnap.forEach(function(m){ msgs.push(m.data()); });
-if(!msgs.length) continue;
-h += "<div class='card' style='border-color:#22c55e'><b>💬 "+name1+" ↔ "+name2+"</b><br><small style='color:#666'>"+chatId+"</small> ("+msgs.length+" msgs)<br>";
-h += "<button class='btn btn-y' onclick=\"toggleChatMsgs('"+chatId+"')\">👁 Dekho</button> ";
-h += "<button class='btn btn-false' onclick=\"deleteFriendChat('"+chatId+"')\">🗑 Delete</button>";
-h += "<div id='fc-"+chatId+"' style='display:none;margin-top:8px'>";
-h += "<table><tr><th>From</th><th>Msg</th><th>Time</th></tr>";
-msgs.forEach(function(m){
-var tm = "";
-try { if(m.time && m.time.toDate) tm = m.time.toDate().toLocaleString(); } catch(e){}
-var fromName = m.fromName || m.from || "";
-var msgText = m.msg || m.text || "";
-if(m.type === "image") msgText = "📷 [Photo]";
-h += "<tr><td><small>"+fromName+"</small></td><td>"+msgText+"</td><td><small>"+tm+"</small></td></tr>";
-});
-h += "</table></div></div>";
-}
-b.innerHTML = h || "<div class='card'>❌ Koi message nahi</div>";
-} catch(e){
-b.innerHTML = "<div class='card'><b>❌ Error:</b> "+e.message+"</div>";
-}
+  var b = document.getElementById("chatBody");
+  var mobFilter = document.getElementById("chatSearch").value.trim();
+  b.innerHTML = "Loading friend chats...<br><small>Users ke pairs se chatId bana raha hu...</small>";
+  try {
+    var h = "";
+    var users = window._allUsers || [];
+    if(!users.length){
+      b.innerHTML = "<div class='card'>❌ Pehle Users tab kholo taaki users load ho jayein</div>";
+      return;
+    }
+    // Filter users if mobile given
+    var targetUsers = users;
+    if(mobFilter){
+      targetUsers = users.filter(function(u){ return (u.mobile||u.id||"").indexOf(mobFilter) >= 0; });
+      if(!targetUsers.length){
+        b.innerHTML = "<div class='card'>❌ '"+mobFilter+"' se koi user nahi mila</div>";
+        return;
+      }
+    }
+    var foundChats = [];
+    var checked = 0;
+    // Har user ke liye, baaki sab users ke saath chatId banao
+    for(var i=0; i<targetUsers.length; i++){
+      var u1 = targetUsers[i];
+      var m1 = (u1.mobile || u1.id || "").toString().trim();
+      if(!m1) continue;
+      for(var j=0; j<users.length; j++){
+        var u2 = users[j];
+        var m2 = (u2.mobile || u2.id || "").toString().trim();
+        if(!m2 || m1 === m2) continue;
+        // ChatId: sort karke join (Flutter code jaisa)
+        var pair = [m1, m2].sort();
+        var chatId = pair[0] + "_" + pair[1];
+        // Duplicate check - pehle se check kiya?
+        if(foundChats.some(function(c){ return c.chatId === chatId; })) continue;
+        checked++;
+        try {
+          var msnap = await getDocs(query(collection(db, "friend_chats", chatId, "messages"), limit(50)));
+          var msgs = [];
+          msnap.forEach(function(d){ 
+            var data = d.data();
+            data._docId = d.id;
+            msgs.push(data); 
+          });
+          if(msgs.length){
+            foundChats.push({chatId: chatId, m1: m1, m2: m2, name1: u1.name||m1, name2: u2.name||m2, msgs: msgs});
+          }
+        } catch(e){ /* subcollection nahi hai, skip */ }
+      }
+      // Progress update
+      b.innerHTML = "Loading... "+(i+1)+"/"+targetUsers.length+" users checked, "+foundChats.length+" chats mili";
+    }
+    if(!foundChats.length){
+      b.innerHTML = "<div class='card' style='border-color:#ef4444'><b>❌ Koi friend chat nahi mili</b><br><small>"+checked+" pairs check kiye.<br><br>Ho sakta hai:<br>1. Firestore Rules block kar rahe hain<br>2. Chat IDs alag format me hain</small></div>";
+      return;
+    }
+    h = "<div class='card'><b style='color:#22c55e'>💬 "+foundChats.length+" friend chats mili!</b></div>";
+    foundChats.forEach(function(c){
+      h += "<div class='card' style='border-color:#22c55e'><b>💬 "+c.name1+" ↔ "+c.name2+"</b><br><small style='color:#666'>"+c.chatId+"</small> ("+c.msgs.length+" msgs)<br>";
+      h += "<button class='btn btn-y' onclick=\"toggleChatMsgs('"+c.chatId.replace(/[^a-zA-Z0-9]/g,'_')+"')\">👁 Dekho</button> ";
+      h += "<button class='btn btn-false' onclick=\"deleteFriendChat('"+c.chatId+"')\">🗑 Delete</button>";
+      h += "<div id='fc-"+c.chatId.replace(/[^a-zA-Z0-9]/g,'_')+"' style='display:none;margin-top:8px;max-height:300px;overflow:auto'>";
+      h += "<table><tr><th>From</th><th>Msg</th><th>Time</th></tr>";
+      // Sort by time
+      c.msgs.sort(function(a,b){
+        try {
+          var ta = a.time && a.time.toDate ? a.time.toDate().getTime() : 0;
+          var tb = b.time && b.time.toDate ? b.time.toDate().getTime() : 0;
+          return ta - tb;
+        } catch(e){ return 0; }
+      });
+      c.msgs.forEach(function(m){
+        var tm = "";
+        try { if(m.time && m.time.toDate) tm = m.time.toDate().toLocaleString(); } catch(e){}
+        var fromName = m.fromName || m.from || "";
+        var msgText = m.msg || m.text || "";
+        if(m.type === "image" || m.imageUrl || m.photoUrl){
+          var pUrl = m.imageUrl || m.photoUrl || "";
+          msgText = pUrl ? "<a href='"+pUrl+"' target='_blank'><img src='"+pUrl+"' style='max-width:150px;max-height:150px;border-radius:8px;border:1px solid #555'></a>" : "📷 [Photo]";
+        }
+        var delBadge = "";
+        if(m.hiddenFor && typeof m.hiddenFor === 'object'){
+          var hu = Object.keys(m.hiddenFor).filter(function(k){ return m.hiddenFor[k] === true; });
+          if(hu.length) delBadge = "<br><span style='background:#7f1d1d;color:#fff;padding:2px 6px;border-radius:4px;font-size:10px'>🚫 User deleted</span>";
+        }
+        h += "<tr><td><small>"+fromName+"</small></td><td>"+msgText+delBadge+"</td><td><small>"+tm+"</small></td></tr>";
+      });
+      h += "</table></div></div>";
+    });
+    b.innerHTML = h;
+  } catch(e){
+    b.innerHTML = "<div class='card' style='border-color:#ef4444'><b>❌ Error:</b> "+e.message+"</div>";
+  }
 };
 window.toggleChatMsgs = function(chatId){
-var el = document.getElementById('fc-'+chatId);
-if(el) el.style.display = el.style.display === 'none'? 'block' : 'none';
+  var el = document.getElementById('fc-'+chatId);
+  if(el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
 };
 window.deleteFriendChat = async function(chatId){
-if(!confirm("Chat "+chatId+" ke SAARE messages delete?")) return;
-if(!confirm("Pakka?")) return;
-var msnap = await getDocs(collection(db, "friend_chats", chatId, "messages"));
-var promises = [];
-msnap.forEach(function(d){ promises.push(deleteDoc(doc(db, "friend_chats", chatId, "messages", d.id))); });
-await Promise.all(promises);
-alert("Delete ✅");
-loadChats();
+  if(!confirm("Chat "+chatId+" ke SAARE messages delete?")) return;
+  if(!confirm("Pakka? Wapas nahi aayenge!")) return;
+  var msnap = await getDocs(collection(db, "friend_chats", chatId, "messages"));
+  var batch = [];
+  msnap.forEach(function(d){ batch.push(deleteDoc(doc(db, "friend_chats", chatId, "messages", d.id))); });
+  await Promise.all(batch);
+  alert("Delete ✅");
+  loadChats();
+};
+window.deleteFriendMsg = async function(chatId, msgId){
+  if(!msgId){ alert("Msg ID nahi mila"); return; }
+  if(!confirm("Ye message delete?")) return;
+  await deleteDoc(doc(db, "friend_chats", chatId, "messages", msgId));
+  alert("Delete ✅");
+  loadChats();
 };
 window.deepScanChats = async function(){
-var b = document.getElementById("chatBody"); b.innerHTML = "🔍 Deep scan..."; var h = ""; var found = [];
-try {
-var R = await getRtdb(); var snap = await R.get(R.child(R.ref(R.db), "/")); var val = snap.val()||{};
-function isMsg(m){ return m && typeof m=== 'object' && (m.msg||m.text||m.message) && (m.from||m.sender||m.name||m.player||m.fromName||m.senderName); }
-function scan(obj, path, depth){
-if(depth > 5 ||!obj || typeof obj!== 'object') return;
-var keys = Object.keys(obj); var msgCount = 0;
-keys.forEach(function(k){ if(isMsg(obj[k])) msgCount++; });
-if(msgCount >= 2){
-found.push(path);
-h += "<div class='card' style='border-color:#22c55e'><b style='color:#22c55e'>✅ /"+path+"</b> ("+msgCount+")<br><button class='btn btn-y' onclick=\"loadDeepChat('"+path+"')\">📖 Dekho</button></div>";
-return;
-}
-keys.forEach(function(k){ if(typeof obj[k]=== 'object' && obj[k]!== null) scan(obj[k], path+"/"+k, depth+1); });
-}
-Object.keys(val).forEach(function(k){ scan(val[k], k, 1); });
-} catch(e){ h += "Error: "+e.message; }
-b.innerHTML = (found.length? "<div class='card'><b style='color:#22c55e'>🎯 "+found.length+" mile!</b></div>":"<div class='card'>❌ Nahi mile</div>") + h;
+  var b = document.getElementById("chatBody");
+  b.innerHTML = "🔍 Deep scan chal raha hai... poora database check ho raha hai";
+  var h = "";
+  var found = [];
+  try {
+    var R = await getRtdb();
+    var snap = await R.get(R.child(R.ref(R.db), "/"));
+    var val = snap.val()||{};
+    function isMsg(m){
+      return m && typeof m=== 'object' && (m.msg||m.text||m.message) && (m.from||m.sender||m.name||m.player||m.fromName||m.senderName);
+    }
+    function scan(obj, path, depth){
+      if(depth > 4 ||!obj || typeof obj!== 'object') return;
+      var keys = Object.keys(obj);
+      var msgCount = 0;
+      keys.forEach(function(k){ if(isMsg(obj[k])) msgCount++; });
+      if(msgCount >= 2){
+        found.push({path:path, count:msgCount, type:"RTDB"});
+        h += "<div class='card' style='border-color:#22c55e'><b style='color:#22c55e'>✅ Mila! RTDB: /"+path+"</b> ("+msgCount+" messages)<br>";
+        var shown = 0;
+        keys.forEach(function(k){
+          if(shown >= 5 ||!isMsg(obj[k])) return;
+          var m = obj[k];
+          h += "<small>"+(m.from||m.sender||m.name||"")+": "+(m.msg||m.text||m.message||"")+"</small><br>";
+          shown++;
+        });
+        h += "<button class='btn btn-y' onclick=\"loadDeepChat('"+path+"')\">📖 Saare dekho</button></div>";
+        return;
+      }
+      keys.forEach(function(k){
+        if(typeof obj[k]=== 'object' && obj[k]!== null) scan(obj[k], path+"/"+k, depth+1);
+      });
+    }
+    Object.keys(val).forEach(function(k){
+      if(["vRoomList","vRooms","voiceRooms","voice_rooms"].indexOf(k) >= 0) return;
+      if(/^[A-Za-z0-9]{4,8}$/.test(k) && typeof val[k]=== 'object' && val[k] && val[k].chat) return;
+      scan(val[k], k, 1);
+    });
+  } catch(e){ h += "<div class='card'>RTDB scan error: "+e.message+"</div>"; }
+  try {
+    if(db){
+      var colls = ["friend_chats","chats","messages","user_chats","private_chats","direct_messages","conversations","friend_messages","inbox","dms"];
+      for(const cn of colls){
+        try {
+          var csnap = await getDocs(query(collection(db,cn), limit(3)));
+          if(!csnap.empty){
+            found.push({path:cn, count:csnap.size, type:"Firestore"});
+            h += "<div class='card' style='border-color:#38bdf8'><b style='color:#38bdf8'>✅ Mila! Firestore: "+cn+"</b> ("+csnap.size+" docs)<br><small>";
+            csnap.forEach(function(d){ h += d.id+", "; });
+            h += "</small></div>";
+          }
+        } catch(e){}
+      }
+    }
+  } catch(e){}
+  if(!found.length){
+    h = "<div class='card' style='border-color:#ef4444'><b style='color:#ef4444'>❌ Kahin nahi mile chats</b><br><small>RTDB deep scan + 10 Firestore collections check ki.</small></div>" + h;
+  } else {
+    h = "<div class='card'><b style='color:#22c55e'>🎯 "+found.length+" jagah mile!</b></div>" + h;
+  }
+  b.innerHTML = h;
 };
 window.loadDeepChat = async function(path){
-var b = document.getElementById("chatBody"); b.innerHTML = "Loading...";
-try {
-var R = await getRtdb(); var snap = await R.get(R.child(R.ref(R.db), path)); var val = snap.val()||{};
-var h = "<div class='card'><b>/"+path+"</b> <button class='btn btn-y' onclick='deepScanChats()'>← Back</button></div>";
-var msgs = [];
-Object.keys(val).forEach(function(k){ var m = val[k]; if(m && typeof m=== 'object' && (m.msg||m.text||m.message)) msgs.push(m); });
-if(msgs.length){
-h += "<table><tr><th>From</th><th>Msg</th></tr>";
-msgs.slice(-50).forEach(function(m){ h += "<tr><td>"+(m.from||m.sender||m.name||"")+"</td><td>"+(m.msg||m.text||m.message||"")+"</td></tr>"; });
-h += "</table>";
-}
-b.innerHTML = h;
-} catch(e){ b.innerHTML = "Error: " + e.message; }
+  var b = document.getElementById("chatBody");
+  b.innerHTML = "Loading /"+path+"...";
+  try {
+    var R = await getRtdb();
+    var snap = await R.get(R.child(R.ref(R.db), path));
+    var val = snap.val()||{};
+    var h = "<div class='card'><b>📍 /"+path+"</b> <button class='btn btn-y' onclick='deepScanChats()'>← Back</button></div>";
+    var msgs = [];
+    Object.keys(val).forEach(function(k){
+      var m = val[k];
+      if(m && typeof m=== 'object' && (m.msg||m.text||m.message)) msgs.push(m);
+    });
+    if(msgs.length){
+      h += "<table><tr><th>From</th><th>Msg</th><th>Time</th></tr>";
+      msgs.slice(-50).forEach(function(m){
+        var tm = "";
+        try { if(m.time) tm = new Date(m.time).toLocaleString(); } catch(e){}
+        var pd = m.imageUrl || m.photoUrl || m.photo || "";
+        var td = m.msg||m.text||m.message||"";
+        var phd = pd ? "<br><a href='"+pd+"' target='_blank'><img src='"+pd+"' style='max-width:100px;border-radius:6px'></a>" : "";
+        h += "<tr><td>"+(m.from||m.sender||m.name||"")+"</td><td>"+td+phd+"</td><td><small>"+tm+"</small></td></tr>";
+      });
+      h += "</table>";
+    } else {
+      Object.keys(val).forEach(function(chatId){
+        var chat = val[chatId]||{};
+        var cm = chat.messages || chat.msgs || chat.chat || chat;
+        var cmsgs = [];
+        if(cm && typeof cm=== 'object'){
+          Object.keys(cm).forEach(function(k){
+            var m = cm[k];
+            if(m && typeof m=== 'object' && (m.msg||m.text||m.message)) cmsgs.push(m);
+          });
+        }
+        if(cmsgs.length){
+          h += "<div class='card'><b>"+chatId+"</b> ("+cmsgs.length+" msgs)<br>";
+          cmsgs.slice(-20).forEach(function(m){
+            h += "<small style='color:#fbbf24'>"+(m.from||m.sender||m.name||"")+":</small> "+(m.msg||m.text||m.message||"")+"<br>";
+          });
+          h += "</div>";
+        }
+      });
+    }
+    b.innerHTML = h;
+  } catch(e){ b.innerHTML = "Error: " + e.message; }
 };
 window.searchChatText = async function(){
-var b = document.getElementById("chatBody");
-var searchText = prompt("Kaunsa message text dhoondu?", "kese ho");
-if(!searchText ||!searchText.trim()) return;
-searchText = searchText.trim().toLowerCase();
-b.innerHTML = "🔎 '"+searchText+"' dhoondh raha hu...<br><small>RTDB + Firestore</small>";
-var h = ""; var foundPaths = [];
-try {
-var R = await getRtdb(); var snap = await R.get(R.child(R.ref(R.db), "/")); var val = snap.val()||{};
-function searchObj(obj, path, depth){
-if(depth > 6 ||!obj || typeof obj!== 'object') return;
-if(typeof obj === 'string'){
-if(obj.toLowerCase().indexOf(searchText) >= 0 && foundPaths.indexOf(path) < 0){
-foundPaths.push(path);
-h += "<div class='card' style='border-color:#22c55e'><b>✅ RTDB: /"+path+"</b></div>";
-}
-return;
-}
-Object.keys(obj).forEach(function(k){ searchObj(obj[k], path+"/"+k, depth+1); });
-}
-Object.keys(val).forEach(function(k){ searchObj(val[k], k, 1); });
-} catch(e){}
-try {
-if(db){
-var colls = ["friend_chats","chats","messages","user_chats","private_chats","direct_messages","conversations","friend_messages","inbox","dms","friends","user_friends","chat_rooms"];
-for(const cn of colls){
-try {
-var csnap = await getDocs(collection(db, cn));
-for(const d of csnap.docs){
-var dataStr = JSON.stringify(d.data()).toLowerCase();
-if(dataStr.indexOf(searchText) >= 0 && foundPaths.indexOf("FS:"+cn+"/"+d.id) < 0){
-foundPaths.push("FS:"+cn+"/"+d.id);
-h += "<div class='card' style='border-color:#38bdf8'><b>✅ Firestore: "+cn+"/"+d.id+"</b></div>";
-}
-}
-} catch(e){}
-}
-}
-} catch(e){}
-b.innerHTML = (foundPaths.length? "<div class='card'><b style='color:#22c55e'>🎯 "+foundPaths.length+" mile!</b></div>":"<div class='card'>❌ '"+searchText+"' nahi mila</div>") + h;
+  var b = document.getElementById("chatBody");
+  var searchText = prompt("Kaunsa message text dhoondu?\n(App me jo dikha wo likho, jaise: kese ho)", "kese ho");
+  if(!searchText ||!searchText.trim()) return;
+  searchText = searchText.trim().toLowerCase();
+  b.innerHTML = "🔎 '" + searchText + "' dhoondh raha hu poore database me...";
+  var h = "";
+  var foundPaths = [];
+  try {
+    var R = await getRtdb();
+    var snap = await R.get(R.child(R.ref(R.db), "/"));
+    var val = snap.val()||{};
+    function searchObj(obj, path, depth){
+      if(depth > 6 ||!obj || typeof obj!== 'object') return;
+      if(typeof obj === 'string'){
+        if(obj.toLowerCase().indexOf(searchText) >= 0){
+          if(foundPaths.indexOf(path) < 0){
+            foundPaths.push(path);
+            h += "<div class='card' style='border-color:#22c55e'><b style='color:#22c55e'>✅ Mila! Path: /" + path + "</b><br><small>Text: \"" + obj.substring(0,100) + "\"</small><br><button class='btn btn-y' onclick=\"loadDeepChat('" + path.split('/').slice(0,-1).join('/') + "')\">📖 Khol ke dekho</button></div>";
+          }
+        }
+        return;
+      }
+      Object.keys(obj).forEach(function(k){
+        searchObj(obj[k], path + "/" + k, depth+1);
+      });
+    }
+    Object.keys(val).forEach(function(k){
+      searchObj(val[k], k, 1);
+    });
+  } catch(e){ h += "<div class='card'>Error: " + e.message + "</div>"; }
+  // Firestore me bhi dhoondo
+  try {
+    if(db){
+      var colls = ["friend_chats","chats","messages","user_chats","private_chats","conversations","friend_messages","inbox"];
+      for(const cn of colls){
+        try {
+          var csnap = await getDocs(collection(db, cn));
+          for(const d of csnap.docs){
+            var data = d.data();
+            var dataStr = JSON.stringify(data).toLowerCase();
+            if(dataStr.indexOf(searchText) >= 0){
+              foundPaths.push("FS:" + cn + "/" + d.id);
+              h += "<div class='card' style='border-color:#38bdf8'><b style='color:#38bdf8'>✅ Mila! Firestore: " + cn + "/" + d.id + "</b></div>";
+            }
+            // Subcollection check
+            try {
+              var msnap = await getDocs(query(collection(db, cn, d.id, "messages"), limit(50)));
+              for(const m of msnap.docs){
+                var mStr = JSON.stringify(m.data()).toLowerCase();
+                if(mStr.indexOf(searchText) >= 0){
+                  foundPaths.push("FS:" + cn + "/" + d.id + "/messages");
+                  h += "<div class='card' style='border-color:#38bdf8'><b style='color:#38bdf8'>✅ Mila! Firestore: " + cn + "/" + d.id + "/messages</b><br><small>" + JSON.stringify(m.data()).substring(0,150) + "</small></div>";
+                  break;
+                }
+              }
+            } catch(e){}
+          }
+        } catch(e){}
+      }
+    }
+  } catch(e){}
+  if(!foundPaths.length){
+    h = "<div class='card' style='border-color:#ef4444'><b style='color:#ef4444'>❌ '" + searchText + "' kahin nahi mila</b><br><small>RTDB poora + 8 Firestore collections check kiye.<br><br>💡 App me message bhejo, phir turant search karo — shayad naya message likha jata hai purana delete ho jata hai.</small></div>";
+  } else {
+    h = "<div class='card'><b style='color:#22c55e'>🎯 " + foundPaths.length + " jagah mila!</b></div>" + h;
+  }
+  b.innerHTML = h;
 };
-window.loadTeam = async function(){ if(!db){ document.getElementById("teamBody").innerHTML = "Firebase not ready"; return; } var mob = document.getElementById("teamSearch").value.trim(); var b = document.getElementById("teamBody"); if(!mob){ b.innerHTML = "Mobile daalo"; return; } b.innerHTML = "Loading..."; var l1 = await getDocs(query(collection(db,"users"), where("referredBy","==",mob))); var h1 = ""; l1.forEach(function(d){ var m = d.data(); h1 += "<div>L1: "+(m.name||"")+" "+(m.mobile||d.id)+"</div>"; }); b.innerHTML = "<div class='card'><b>L1:</b> "+l1.size+"</div><div class='card'>"+h1+"</div>"; };
-window.loadPremReq = async function(){ if(!db){ document.getElementById("premBody").innerHTML = "Firebase not ready"; return; } var b = document.getElementById("premBody"); b.innerHTML = "Loading..."; var snap = await getDocs(query(collection(db,"premium_requests"), where("status","==","CHECK"))); var h = ""; snap.forEach(function(d){ var m = d.data(); h += "<div class='card'><b>"+(m.mobile||d.id)+"</b> | ₹"+(m.amount||"")+"<br><button class='btn btn-true' onclick=\"setPremium('"+d.id+"',true)\">APPROVE</button> <button class='btn btn-false' onclick=\"rejectPrem('"+d.id+"')\">REJECT</button></div>"; }); b.innerHTML = h || "Koi pending nahi"; };
-window.rejectPrem = async function(id){ if(!db) return; await updateDoc(doc(db,"premium_requests",id), {status:"REJECTED"}); loadPremReq(); };
-window.loadEarnings = async function(){ if(!db){ document.getElementById("walletBody").innerHTML = "Firebase not ready"; return; } var b = document.getElementById("walletBody"); b.innerHTML = "Loading..."; var snap = await getDocs(query(collection(db,"earnings"), limit(100))); var h = "<table><tr><th>To</th><th>Amt</th><th>Type</th></tr>"; snap.forEach(function(d){ var m = d.data(); h += "<tr><td>"+(m.to||"")+"</td><td>₹"+(m.amount||0)+"</td><td>"+(m.type||"")+"</td></tr>"; }); b.innerHTML = h + "</table>"; };
-window.loadUpiHist = async function(){ if(!db){ document.getElementById("walletBody").innerHTML = "Firebase not ready"; return; } var b = document.getElementById("walletBody"); b.innerHTML = "Loading..."; var snap = await getDocs(query(collection(db,"upi_history"), limit(100))); var h = "<table><tr><th>Mobile</th><th>Change</th></tr>"; snap.forEach(function(d){ var m = d.data(); h += "<tr><td>"+(m.mobile||"")+"</td><td>"+(m.oldUpi||"")+" → "+(m.newUpi||"")+"</td></tr>"; }); b.innerHTML = h + "</table>"; };
-window.loadPremHist = async function(){ if(!db){ document.getElementById("walletBody").innerHTML = "Firebase not ready"; return; } var b = document.getElementById("walletBody"); b.innerHTML = "Loading..."; var snap = await getDocs(query(collection(db,"premium_history"), limit(100))); var h = "<table><tr><th>Mobile</th><th>Action</th></tr>"; snap.forEach(function(d){ var m = d.data(); h += "<tr><td>"+(m.mobile||"")+"</td><td>"+(m.action||"")+"</td></tr>"; }); b.innerHTML = h + "</table>"; };
-window.loadBanHist = async function(){ if(!db){ document.getElementById("walletBody").innerHTML = "Firebase not ready"; return; } var b = document.getElementById("walletBody"); b.innerHTML = "Loading..."; var snap = await getDocs(collection(db,"ban_history")); var h = ""; snap.forEach(function(d){ var m = d.data(); h += "<div class='card'><b>"+m.mobile+"</b> - "+m.banType+"<br><small>"+(m.reason||"")+"</small></div>"; }); b.innerHTML = h || "Koi history nahi"; };
-window.loadSuchna = async function(){ if(!db) return; try { var d = await getDoc(doc(db,"config","jaruri_suchna")); if(d.exists()) document.getElementById("suchnaText").value = (d.data().points||[]).join("\n"); } catch(e){} };
-window.saveSuchna = async function(){ if(!db){ alert("Firebase not ready"); return; } var pts = document.getElementById("suchnaText").value.split("\n").map(function(s){ return s.trim(); }).filter(Boolean); await setDoc(doc(db,"config","jaruri_suchna"), {points:pts, updated:serverTimestamp()}); alert("Save ✅"); };
-window.loadPlan = async function(){ if(!db) return; try { var d = await getDoc(doc(db,"config","plan")); if(d.exists()){ var m = d.data(); document.getElementById("planL1").value = m.l1||100; document.getElementById("planL2").value = m.l2||50; document.getElementById("planL3").value = m.l3||25; document.getElementById("planPrice").value = m.price||500; } } catch(e){} };
-window.savePlan = async function(){ if(!db){ alert("Firebase not ready"); return; } await setDoc(doc(db,"config","plan"), {l1:+document.getElementById("planL1").value||100, l2:+document.getElementById("planL2").value||50, l3:+document.getElementById("planL3").value||25, price:+document.getElementById("planPrice").value||500, updated:serverTimestamp()}); alert("Plan save ✅"); };
+window.loadTeam = async function(){
+  var mob = document.getElementById("teamSearch").value.trim();
+  var b = document.getElementById("teamBody");
+  if(!mob){ b.innerHTML = "Mobile daalo"; return; }
+  b.innerHTML = "Loading...";
+  var l1 = await getDocs(query(collection(db,"users"), where("referredBy","==",mob)));
+  var h1 = "";
+  l1.forEach(function(d){ var m = d.data(); h1 += "<div>L1: " + (m.name||"") + " " + (m.mobile||d.id) + "</div>"; });
+  b.innerHTML = "<div class='card'><b>L1:</b> " + l1.size + "</div><div class='card'>" + h1 + "</div>";
+};
+window.loadPremReq = async function(){
+  var b = document.getElementById("premBody"); b.innerHTML = "Loading...";
+  var snap = await getDocs(query(collection(db,"premium_requests"), where("status","==","CHECK")));
+  var h = "";
+  snap.forEach(function(d){
+    var m = d.data();
+    h += "<div class='card'><b>" + (m.mobile||d.id) + "</b> | ₹" + (m.amount||"") + "<br><button class='btn btn-true' onclick=\"setPremium('" + d.id + "',true)\">APPROVE</button> <button class='btn btn-false' onclick=\"rejectPrem('" + d.id + "')\">REJECT</button></div>";
+  });
+  b.innerHTML = h || "Koi pending nahi";
+};
+window.rejectPrem = async function(id){
+  await updateDoc(doc(db,"premium_requests",id), {status:"REJECTED"});
+  loadPremReq();
+};
+window.loadEarnings = async function(){
+  var b = document.getElementById("walletBody"); b.innerHTML = "Loading...";
+  var snap = await getDocs(query(collection(db,"earnings"), limit(100)));
+  var h = "<table><tr><th>To</th><th>Amt</th><th>Type</th></tr>";
+  snap.forEach(function(d){ var m = d.data(); h += "<tr><td>" + (m.to||"") + "</td><td>₹" + (m.amount||0) + "</td><td>" + (m.type||"") + "</td></tr>"; });
+  b.innerHTML = h + "</table>";
+};
+window.loadUpiHist = async function(){
+  var b = document.getElementById("walletBody"); b.innerHTML = "Loading...";
+  var snap = await getDocs(query(collection(db,"upi_history"), limit(100)));
+  var h = "<table><tr><th>Mobile</th><th>Change</th></tr>";
+  snap.forEach(function(d){ var m = d.data(); h += "<tr><td>" + (m.mobile||"") + "</td><td>" + (m.oldUpi||"") + " → " + (m.newUpi||"") + "</td></tr>"; });
+  b.innerHTML = h + "</table>";
+};
+window.loadPremHist = async function(){
+  var b = document.getElementById("walletBody"); b.innerHTML = "Loading...";
+  var snap = await getDocs(query(collection(db,"premium_history"), limit(100)));
+  var h = "<table><tr><th>Mobile</th><th>Action</th></tr>";
+  snap.forEach(function(d){ var m = d.data(); h += "<tr><td>" + (m.mobile||"") + "</td><td>" + (m.action||"") + "</td></tr>"; });
+  b.innerHTML = h + "</table>";
+};
+window.loadBanHist = async function(){
+  var b = document.getElementById("walletBody"); b.innerHTML = "Loading...";
+  var snap = await getDocs(collection(db,"ban_history"));
+  var h = "";
+  snap.forEach(function(d){ var m = d.data(); h += "<div class='card'><b>" + m.mobile + "</b> - " + m.banType + "<br><small>" + (m.reason||"") + "</small></div>"; });
+  b.innerHTML = h || "Koi history nahi";
+};
+window.loadSuchna = async function(){
+  try {
+    var d = await getDoc(doc(db,"config","jaruri_suchna"));
+    if(d.exists()) document.getElementById("suchnaText").value = (d.data().points||[]).join("\n");
+  } catch(e){}
+};
+window.saveSuchna = async function(){
+  var pts = document.getElementById("suchnaText").value.split("\n").map(function(s){ return s.trim(); }).filter(Boolean);
+  await setDoc(doc(db,"config","jaruri_suchna"), {points:pts, updated:serverTimestamp()});
+  alert("Save ✅");
+};
+window.loadPlan = async function(){
+  try {
+    var d = await getDoc(doc(db,"config","plan"));
+    if(d.exists()){
+      var m = d.data();
+      document.getElementById("planL1").value = m.l1||100;
+      document.getElementById("planL2").value = m.l2||50;
+      document.getElementById("planL3").value = m.l3||25;
+      document.getElementById("planPrice").value = m.price||500;
+    }
+  } catch(e){}
+};
+window.savePlan = async function(){
+  await setDoc(doc(db,"config","plan"), {l1:+document.getElementById("planL1").value||100, l2:+document.getElementById("planL2").value||50, l3:+document.getElementById("planL3").value||25, price:+document.getElementById("planPrice").value||500, updated:serverTimestamp()});
+  alert("Plan save ✅");
+};
 </script>
-</body>
+<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
 </html>
