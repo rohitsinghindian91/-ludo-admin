@@ -28,7 +28,8 @@ label{font-size:13px;color:#fbbf24;font-weight:bold}
 </style>
 </head>
 <body>
-<h2 style="margin:4px 0">🎮 LUDO PREMIUM - FULL ADMIN <span style="color:#22c55e">v7</span></h2>
+<h2 style="margin:4px 0">🎮 LUDO PREMIUM - FULL ADMIN <span style="color:#22c55e">v7.1</span></h2>
+<div id="jsStatus" style="font-size:12px;color:#fbbf24">⏳ JS load ho raha hai...</div>
 <div>Total: <span id="total">0</span> | Premium: <span id="prem">0</span> | Banned: <span id="banned">0</span> | Live Ludo: <span id="liveL">0</span> | Live Voice: <span id="liveV">0</span></div>
 
 <div class="tabs">
@@ -154,6 +155,15 @@ label{font-size:13px;color:#fbbf24;font-weight:bold}
 <button class="btn btn-unban" onclick="document.getElementById('powerModal').style.display='none'">Cancel</button>
 </div></div>
 
+<!-- ERROR CATCHER: koi bhi JS error aaye to seedha table me dikhega -->
+<script>
+window.addEventListener('error', function(e){
+  var tb = document.getElementById("tbody");
+  if(tb) tb.innerHTML = '<tr><td colspan="6" style="color:#ef4444">❌ JS Error pakda gaya:<br><b>'+(e.message||e.error||"unknown")+'</b><br><small>Iska screenshot bhejo</small></td></tr>';
+  var st = document.getElementById("jsStatus");
+  if(st){ st.style.color="#ef4444"; st.innerHTML = "❌ Error: "+(e.message||"unknown"); }
+});
+</script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, addDoc, Timestamp, query, orderBy, where, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
@@ -170,7 +180,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// RTDB SAFE lazy load: agar ye fail bhi ho jaye to Users tab chalta rahega
+// RTDB (Realtime Database) - SAFE lazy load: agar ye fail bhi ho jaye to Users tab chalta rahega
 let _rtdb = null;
 async function getRtdb(){
   if(_rtdb) return _rtdb;
@@ -181,6 +191,9 @@ async function getRtdb(){
 
 let allUsers = [], banTarget = null, banPhotoData = "", powTarget = null, editTarget = null;
 
+// Module chal raha hai - status update
+try{ document.getElementById("jsStatus").innerHTML = "✅ JS chal raha hai... users load ho rahe hain"; document.getElementById("jsStatus").style.color="#22c55e"; }catch(e){}
+
 window.showTab = (id, el)=>{
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -190,7 +203,8 @@ window.showTab = (id, el)=>{
   if(id==='premreq') loadPremReq(); if(id==='suchna') loadSuchna(); if(id==='plan') loadPlan();
 };
 
-document.getElementById("banPhoto").addEventListener("change", e=>{
+const _bp = document.getElementById("banPhoto");
+if(_bp) _bp.addEventListener("change", e=>{
   const f = e.target.files[0]; if(!f) return;
   const r = new FileReader();
   r.onload = ev=>{ banPhotoData = ev.target.result; const p=document.getElementById("banPreview"); p.src=banPhotoData; p.style.display="block"; };
@@ -213,6 +227,7 @@ async function init(){
   }
   allUsers.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
   renderUsers();
+  try{ document.getElementById("jsStatus").innerHTML = "✅ Sab OK - "+allUsers.length+" users loaded"; }catch(e){}
 }
 
 window.renderUsers = ()=>{
@@ -628,7 +643,13 @@ window.saveSuchna=async()=>{ const pts=document.getElementById("suchnaText").val
 window.loadPlan=async()=>{ try{ const d=await getDoc(doc(db,"config","plan")); if(d.exists()){ const m=d.data(); document.getElementById("planL1").value=m.l1||100; document.getElementById("planL2").value=m.l2||50; document.getElementById("planL3").value=m.l3||25; document.getElementById("planPrice").value=m.price||500; } }catch(e){} };
 window.savePlan=async()=>{ await setDoc(doc(db,"config","plan"),{l1:+document.getElementById("planL1").value||100,l2:+document.getElementById("planL2").value||50,l3:+document.getElementById("planL3").value||25,price:+document.getElementById("planPrice").value||500,updated:serverTimestamp()}); alert("Plan save ✅"); };
 
-init();
+init().catch(e=>{
+  try{
+    document.getElementById("tbody").innerHTML = '<tr><td colspan="6" style="color:#ef4444">❌ Init Error:<br><b>'+e.message+'</b><br><small>Iska screenshot bhejo</small></td></tr>';
+    document.getElementById("jsStatus").innerHTML = "❌ Init fail: "+e.message;
+    document.getElementById("jsStatus").style.color="#ef4444";
+  }catch(e2){}
+});
 </script>
 </body>
 </html>
