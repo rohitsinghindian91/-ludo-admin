@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LUDO PREMIUM - FULL ADMIN (v8.1)</title>
+<title>LUDO PREMIUM - FULL ADMIN (v8.2)</title>
 <style>
 body{background:#0A0E1A;color:#fff;font-family:sans-serif;padding:10px;margin:0}
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
@@ -28,7 +28,7 @@ label{font-size:13px;color:#fbbf24;font-weight:bold}
 </style>
 </head>
 <body>
-<h2 style="margin:4px 0">🎮 LUDO PREMIUM - FULL ADMIN <span style="color:#22c55e">v8.1</span></h2>
+<h2 style="margin:4px 0">🎮 LUDO PREMIUM - FULL ADMIN <span style="color:#22c55e">v8.2</span></h2>
 <div id="jsStatus" style="font-size:12px;color:#fbbf24">⏳ JS load ho raha hai...</div>
 <div>Total: <span id="total">0</span> | Premium: <span id="prem">0</span> | Banned: <span id="banned">0</span> | Live Ludo: <span id="liveL">0</span> | Live Voice: <span id="liveV">0</span></div>
 <div class="tabs">
@@ -348,7 +348,67 @@ b.innerHTML = h || "<div class='card'><b>❌ Koi ludo chat nahi mili</b></div>";
 } catch(e){ b.innerHTML = "Error: " + e.message; }
 };
 window.loadChats = async function(){
-document.getElementById("chatBody").innerHTML = "<div class='card'><b>💡 Inbox ke liye 🔎 Text Search dabao</b><br><small>App me jo message dikha wo likho</small></div>";
+var b = document.getElementById("chatBody");
+var mobFilter = document.getElementById("chatSearch").value.trim();
+b.innerHTML = "Loading friend chats...";
+try {
+var h = "";
+var csnap = await getDocs(collection(db, "friend_chats"));
+var chatDocs = [];
+csnap.forEach(function(d){ chatDocs.push(d); });
+if(mobFilter){ chatDocs = chatDocs.filter(function(d){ return d.id.indexOf(mobFilter) >= 0; }); }
+if(!chatDocs.length){ b.innerHTML = "<div class='card'>❌ Koi friend chat nahi mili</div>"; return; }
+h += "<div class='card'><b>💬 "+chatDocs.length+" friend chats mili</b></div>";
+for(const d of chatDocs){
+var chatId = d.id;
+var parts = chatId.split("_");
+var user1 = parts[0]||"", user2 = parts[1]||"";
+var name1 = user1, name2 = user2;
+try {
+var u1 = await getDoc(doc(db, "users", user1));
+if(u1.exists()) name1 = u1.data().name || user1;
+var u2 = await getDoc(doc(db, "users", user2));
+if(u2.exists()) name2 = u2.data().name || user2;
+} catch(e){}
+var msnap;
+try { msnap = await getDocs(query(collection(db, "friend_chats", chatId, "messages"), orderBy("time", "asc"), limit(100))); }
+catch(e){ msnap = await getDocs(query(collection(db, "friend_chats", chatId, "messages"), limit(100))); }
+var msgs = [];
+msnap.forEach(function(m){ msgs.push(m.data()); });
+if(!msgs.length) continue;
+h += "<div class='card' style='border-color:#22c55e'><b>💬 "+name1+" ↔ "+name2+"</b><br><small style='color:#666'>"+chatId+"</small> ("+msgs.length+" msgs)<br>";
+h += "<button class='btn btn-y' onclick=\"toggleChatMsgs('"+chatId+"')\">👁 Dekho</button> ";
+h += "<button class='btn btn-false' onclick=\"deleteFriendChat('"+chatId+"')\">🗑 Delete</button>";
+h += "<div id='fc-"+chatId+"' style='display:none;margin-top:8px'>";
+h += "<table><tr><th>From</th><th>Msg</th><th>Time</th></tr>";
+msgs.forEach(function(m){
+var tm = "";
+try { if(m.time && m.time.toDate) tm = m.time.toDate().toLocaleString(); } catch(e){}
+var fromName = m.fromName || m.from || "";
+var msgText = m.msg || m.text || "";
+if(m.type === "image") msgText = "📷 [Photo]";
+h += "<tr><td><small>"+fromName+"</small></td><td>"+msgText+"</td><td><small>"+tm+"</small></td></tr>";
+});
+h += "</table></div></div>";
+}
+b.innerHTML = h || "<div class='card'>❌ Koi message nahi</div>";
+} catch(e){
+b.innerHTML = "<div class='card'><b>❌ Error:</b> "+e.message+"</div>";
+}
+};
+window.toggleChatMsgs = function(chatId){
+var el = document.getElementById('fc-'+chatId);
+if(el) el.style.display = el.style.display === 'none'? 'block' : 'none';
+};
+window.deleteFriendChat = async function(chatId){
+if(!confirm("Chat "+chatId+" ke SAARE messages delete?")) return;
+if(!confirm("Pakka?")) return;
+var msnap = await getDocs(collection(db, "friend_chats", chatId, "messages"));
+var promises = [];
+msnap.forEach(function(d){ promises.push(deleteDoc(doc(db, "friend_chats", chatId, "messages", d.id))); });
+await Promise.all(promises);
+alert("Delete ✅");
+loadChats();
 };
 window.deepScanChats = async function(){
 var b = document.getElementById("chatBody"); b.innerHTML = "🔍 Deep scan..."; var h = ""; var found = [];
@@ -387,26 +447,26 @@ b.innerHTML = h;
 };
 window.searchChatText = async function(){
 var b = document.getElementById("chatBody");
-var searchText = prompt("Kaunsa message text dhoondu? (App me jo dikha)", "kese ho");
+var searchText = prompt("Kaunsa message text dhoondu?", "kese ho");
 if(!searchText ||!searchText.trim()) return;
 searchText = searchText.trim().toLowerCase();
-b.innerHTML = "🔎 '"+searchText+"' dhoondh raha hu...<br><small>RTDB + Firestore dono me</small>";
+b.innerHTML = "🔎 '"+searchText+"' dhoondh raha hu...<br><small>RTDB + Firestore</small>";
 var h = ""; var foundPaths = [];
 try {
 var R = await getRtdb(); var snap = await R.get(R.child(R.ref(R.db), "/")); var val = snap.val()||{};
 function searchObj(obj, path, depth){
 if(depth > 6 ||!obj || typeof obj!== 'object') return;
 if(typeof obj === 'string'){
-if(obj.toLowerCase().indexOf(searchText) >= 0 && foundPaths.indexOf("RTDB:/"+path) < 0){
-foundPaths.push("RTDB:/"+path);
-h += "<div class='card' style='border-color:#22c55e'><b style='color:#22c55e'>✅ RTDB: /"+path+"</b><br><button class='btn btn-y' onclick=\"loadDeepChat('"+path.split('/').slice(0,-1).join('/')+"')\">📖 Dekho</button></div>";
+if(obj.toLowerCase().indexOf(searchText) >= 0 && foundPaths.indexOf(path) < 0){
+foundPaths.push(path);
+h += "<div class='card' style='border-color:#22c55e'><b>✅ RTDB: /"+path+"</b></div>";
 }
 return;
 }
 Object.keys(obj).forEach(function(k){ searchObj(obj[k], path+"/"+k, depth+1); });
 }
 Object.keys(val).forEach(function(k){ searchObj(val[k], k, 1); });
-} catch(e){ h += "<div class='card'>RTDB Error: "+e.message+"</div>"; }
+} catch(e){}
 try {
 if(db){
 var colls = ["friend_chats","chats","messages","user_chats","private_chats","direct_messages","conversations","friend_messages","inbox","dms","friends","user_friends","chat_rooms"];
@@ -417,53 +477,14 @@ for(const d of csnap.docs){
 var dataStr = JSON.stringify(d.data()).toLowerCase();
 if(dataStr.indexOf(searchText) >= 0 && foundPaths.indexOf("FS:"+cn+"/"+d.id) < 0){
 foundPaths.push("FS:"+cn+"/"+d.id);
-h += "<div class='card' style='border-color:#38bdf8'><b style='color:#38bdf8'>✅ Firestore: "+cn+" / "+d.id+"</b><br><button class='btn btn-y' onclick=\"loadFirestoreChat('"+cn+"','"+d.id+"')\">📖 Dekho</button></div>";
+h += "<div class='card' style='border-color:#38bdf8'><b>✅ Firestore: "+cn+"/"+d.id+"</b></div>";
 }
-try {
-var msnap = await getDocs(query(collection(db, cn, d.id, "messages"), limit(100)));
-var mArr = [];
-msnap.forEach(function(x){ mArr.push(x); });
-for(const m of mArr){
-var mStr = JSON.stringify(m.data()).toLowerCase();
-if(mStr.indexOf(searchText) >= 0 && foundPaths.indexOf("FS:"+cn+"/"+d.id+"/messages") < 0){
-foundPaths.push("FS:"+cn+"/"+d.id+"/messages");
-h += "<div class='card' style='border-color:#38bdf8'><b style='color:#38bdf8'>✅ Firestore: "+cn+"/"+d.id+"/messages</b><br><button class='btn btn-y' onclick=\"loadFirestoreChat('"+cn+"','"+d.id+"')\">📖 Dekho</button></div>";
-break;
-}
-}
-} catch(e2){}
 }
 } catch(e){}
 }
 }
-} catch(e){ h += "<div class='card'>Firestore Error: "+e.message+"</div>"; }
-if(!foundPaths.length){
-h = "<div class='card' style='border-color:#ef4444'><b style='color:#ef4444'>❌ '"+searchText+"' kahin nahi mila</b><br><small>RTDB + 13 Firestore collections check kiye.<br>💡 App me <b>naya message bhejo</b> phir turant search karo!</small></div>";
-} else {
-h = "<div class='card'><b style='color:#22c55e'>🎯 "+foundPaths.length+" jagah mila!</b></div>" + h;
-}
-b.innerHTML = h;
-};
-window.loadFirestoreChat = async function(collName, docId){
-var b = document.getElementById("chatBody");
-b.innerHTML = "Loading "+collName+"/"+docId+"...";
-try {
-var h = "<div class='card'><b>📍 Firestore: "+collName+" / "+docId+"</b> <button class='btn btn-y' onclick='searchChatText()'>← Back</button></div>";
-var msnap = await getDocs(query(collection(db, collName, docId, "messages"), limit(100)));
-var hasMsg = false;
-msnap.forEach(function(m){ hasMsg = true; });
-if(hasMsg){
-h += "<table><tr><th>From</th><th>Msg</th><th>Time</th></tr>";
-msnap.forEach(function(m){
-var d = m.data();
-var tm = "";
-try { if(d.time && d.time.toDate) tm = d.time.toDate().toLocaleString(); } catch(e){}
-h += "<tr><td>"+(d.from||d.sender||"")+"</td><td>"+(d.text||d.msg||"")+"</td><td><small>"+tm+"</small></td></tr>";
-});
-h += "</table>";
-}
-b.innerHTML = h;
-} catch(e){ b.innerHTML = "Error: " + e.message; }
+} catch(e){}
+b.innerHTML = (foundPaths.length? "<div class='card'><b style='color:#22c55e'>🎯 "+foundPaths.length+" mile!</b></div>":"<div class='card'>❌ '"+searchText+"' nahi mila</div>") + h;
 };
 window.loadTeam = async function(){ if(!db){ document.getElementById("teamBody").innerHTML = "Firebase not ready"; return; } var mob = document.getElementById("teamSearch").value.trim(); var b = document.getElementById("teamBody"); if(!mob){ b.innerHTML = "Mobile daalo"; return; } b.innerHTML = "Loading..."; var l1 = await getDocs(query(collection(db,"users"), where("referredBy","==",mob))); var h1 = ""; l1.forEach(function(d){ var m = d.data(); h1 += "<div>L1: "+(m.name||"")+" "+(m.mobile||d.id)+"</div>"; }); b.innerHTML = "<div class='card'><b>L1:</b> "+l1.size+"</div><div class='card'>"+h1+"</div>"; };
 window.loadPremReq = async function(){ if(!db){ document.getElementById("premBody").innerHTML = "Firebase not ready"; return; } var b = document.getElementById("premBody"); b.innerHTML = "Loading..."; var snap = await getDocs(query(collection(db,"premium_requests"), where("status","==","CHECK"))); var h = ""; snap.forEach(function(d){ var m = d.data(); h += "<div class='card'><b>"+(m.mobile||d.id)+"</b> | ₹"+(m.amount||"")+"<br><button class='btn btn-true' onclick=\"setPremium('"+d.id+"',true)\">APPROVE</button> <button class='btn btn-false' onclick=\"rejectPrem('"+d.id+"')\">REJECT</button></div>"; }); b.innerHTML = h || "Koi pending nahi"; };
