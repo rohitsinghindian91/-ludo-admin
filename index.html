@@ -210,7 +210,7 @@ window.addEventListener('error', function(e){ var el=document.getElementById('er
 // ===== MODULE 1: USERS (DP column + Reset DP) =====
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, query, orderBy, limit, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const firebaseConfig = { apiKey: "AIzaSyDUMMY-REPLACE-WITH-YOURS", authDomain: "ludo-premium-50-e427e.firebaseapp.com", projectId: "ludo-premium-50-e427e" };
+const firebaseConfig = { apiKey: "AIzaSyAdpsbH2w8T-iMh6pfBIBmjrgybXtgS9zY", authDomain: "ludo-premium-50-e427e.firebaseapp.com", projectId: "ludo-premium-50-e427e" };
 const app = initializeApp(firebaseConfig); const db = getFirestore(app);
 let allUsers = []; let editTarget = null; let banTarget = null; let powerTarget = null;
 window.db = db;
@@ -315,7 +315,7 @@ RU();
 // ===== MODULE 2: LUDO / VOICE / CHATS / TEAM / PREMIUM / WALLET / SUCHNA / PLAN =====
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const app2 = initializeApp({ apiKey: "AIzaSyDUMMY-REPLACE-WITH-YOURS", authDomain: "ludo-premium-50-e427e.firebaseapp.com", projectId: "ludo-premium-50-e427e" }, "m2");
+const app2 = initializeApp({ apiKey: "AIzaSyAdpsbH2w8T-iMh6pfBIBmjrgybXtgS9zY", authDomain: "ludo-premium-50-e427e.firebaseapp.com", projectId: "ludo-premium-50-e427e" }, "m2");
 const db = getFirestore(app2);
 function esc(s){ return String(s??"").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 window.loadLudo = async function(){
@@ -383,7 +383,7 @@ window.delDoc2 = async function(col,id,bodyId,reload){ if(!confirm("Delete?")) r
 // ===== MODULE 3: GIFTS / COINS / LEVELS / FRAMES / PK =====
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, addDoc, query, orderBy, limit, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const app3 = initializeApp({ apiKey: "AIzaSyDUMMY-REPLACE-WITH-YOURS", authDomain: "ludo-premium-50-e427e.firebaseapp.com", projectId: "ludo-premium-50-e427e" }, "m3");
+const app3 = initializeApp({ apiKey: "AIzaSyAdpsbH2w8T-iMh6pfBIBmjrgybXtgS9zY", authDomain: "ludo-premium-50-e427e.firebaseapp.com", projectId: "ludo-premium-50-e427e" }, "m3");
 const db = getFirestore(app3);
 // RTDB (PK live battles ke liye)
 const rtdbApp = firebase.initializeApp({ databaseURL: "https://ludo-premium-50-e427e-default-rtdb.asia-southeast1.firebasedatabase.app" }, "rtdb");
