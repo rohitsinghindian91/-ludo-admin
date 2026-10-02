@@ -22,8 +22,8 @@
   font-family: "Optimistic Mono", ui-monospace, monospace;
 }
 </style>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LUDO PREMIUM • ULTIMATE ADMIN v9.2 - REAL DATA</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LUDO PREMIUM • v9.3 MERGED ULTIMATE - v8.9 + v9.2</title>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
@@ -31,42 +31,159 @@
 *{box-sizing:border-box} body{margin:0;background:#0A0E1A;color:#fff;font-family:Inter,Arial,sans-serif;padding:12px}
 .header{background:#0A0E1A;border-bottom:1px solid #1e293b;padding:12px;border-radius:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
 .badge{background:#fbbf24;color:#000;padding:6px 10px;border-radius:10px;font-weight:900}
-.tabs{display:flex;gap:8px;overflow-x:auto;padding:8px 0} .tab{padding:10px 14px;border-radius:20px;border:1px solid #1e293b;background:#1a2238;color:#94a3b8;cursor:pointer;white-space:nowrap;font-size:12px} .tab.on{background:#fbbf24;color:#000;font-weight:700}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:8px 0} .tab{padding:10px 14px;border-radius:20px;border:1px solid #1e293b;background:#1a2238;color:#94a3b8;cursor:pointer;white-space:nowrap;font-size:12px;font-weight:bold} .tab.on,.tab.active{background:#fbbf24;color:#000;border-color:#fbbf24}
 .card{background:#151A2B;border:1px solid #1e293b;border-radius:16px;padding:12px;margin-bottom:12px}
-.btn{padding:7px 12px;border:none;border-radius:10px;cursor:pointer;font-size:12px;font-weight:600;margin:2px} .btn-y{background:#fbbf24;color:#000} .btn-g{background:#059669;color:#fff} .btn-r{background:#dc2626;color:#fff} .btn-v{background:#7c3aed;color:#fff} .btn-dark{background:#1a2238;color:#fff;border:1px solid #1e293b}
-input,select{background:#0A0E1A;border:1px solid #1e293b;color:#fff;padding:10px;border-radius:10px;width:100%;margin:4px 0}
-.avatar{width:44px;height:44px;border-radius:12px;background:linear-gradient(to bottom right,#fbbf24,#d97706);color:#000;font-weight:900;display:flex;align-items:center;justify-content:center}
+.btn{padding:7px 12px;border:none;border-radius:10px;cursor:pointer;font-size:12px;font-weight:600;margin:2px} .btn-y{background:#fbbf24;color:#000} .btn-g{background:#059669;color:#fff} .btn-r{background:#dc2626;color:#fff} .btn-v{background:#7c3aed;color:#fff} .btn-dark{background:#1a2238;color:#fff;border:1px solid #1e293b} .btn-true{background:#22c55e;color:#000} .btn-false{background:#ef4444;color:#fff} .btn-ban{background:#7f1d1d;color:#fff} .btn-unban{background:#2563eb;color:#fff}
+input,select,textarea{background:#0A0E1A;border:1px solid #1e293b;color:#fff;padding:10px;border-radius:10px;width:100%;margin:4px 0}
+table{width:100%;border-collapse:collapse;font-size:12px} th,td{border:1px solid #1e293b;padding:8px;text-align:left;vertical-align:top} th{background:#0A0E1A;color:#fbbf24;position:sticky;top:0} tr:nth-child(even){background:#0F1422}
+.avatar{width:44px;height:44px;border-radius:12px;background:linear-gradient(to bottom right,#fbbf24,#d97706);color:#000;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:16px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:99;justify-content:center;align-items:center;padding:12px} .modal>div{background:#151A2B;padding:18px;border-radius:16px;max-width:480px;width:96%;max-height:92vh;overflow:auto;border:1px solid #1e293b}
+.section{display:none} .section.active{display:block}
+#powList label{display:block;margin:6px 0;font-size:13px} #powList input{width:auto;margin-right:6px}
+label{font-size:12px;color:#fbbf24;font-weight:bold}
+.dupBanner{background:#1a1a0a;border:1px solid #fbbf24;border-radius:12px;padding:10px;margin:10px 0;display:none}
 </style>
 </head>
 <body>
+
 <div class="header">
-  <div style="display:flex;gap:10px;align-items:center"><div class="badge">9.2 REAL</div><div><b>LUDO PREMIUM • ULTIMATE ADMIN v9.2 - REAL DATA</b><br><small id="fbStatus" style="color:#fbbf24">Connecting to Firebase...</small></div></div>
-  <button class="btn btn-dark" onclick="loadRealUsers()">↻ Load Real Data</button>
+  <div style="display:flex;gap:10px;align-items:center">
+    <div class="badge">9.3</div>
+    <div><b>LUDO PREMIUM • v9.3 MERGED ULTIMATE</b><br><small style="color:#94a3b8" id="jsStatus">⏳ v8.9 features + v9.2 dark UI merging... Firebase: ludo-premium-50-e427e</small><br><small>Total: <span id="total">0</span> | Premium: <span id="prem">0</span> | Banned: <span id="banned">0</span> | Live Ludo: <span id="liveL">0</span> | Live Voice: <span id="liveV">0</span></small></div>
+  </div>
+  <button class="btn btn-dark" onclick="location.reload()">↻ Refresh</button>
 </div>
 
 <div class="tabs">
-  <button class="tab on" onclick="showTab('users',this)">👥 Users <span id="realCount"></span></button>
-  <button class="tab" onclick="showTab('live',this)">🎮 Live Ludo</button>
+  <button class="tab on active" onclick="showTab('users',this)">👥 Users <span id="dupCount" style="background:#ef4444;color:#fff;padding:2px 6px;border-radius:10px;font-size:10px;display:none">0</span></button>
+  <button class="tab" onclick="showTab('ludo',this)">🎲 Live Ludo</button>
   <button class="tab" onclick="showTab('voice',this)">🎤 Voice Rooms</button>
+  <button class="tab" onclick="showTab('chats',this)">💬 All Chats</button>
+  <button class="tab" onclick="showTab('team',this)">🌳 Team</button>
+  <button class="tab" onclick="showTab('premreq',this)">💎 Premium Req</button>
+  <button class="tab" onclick="showTab('wallet',this)">💰 Wallet/UPI</button>
+  <button class="tab" onclick="showTab('suchna',this)">📢 Suchna</button>
+  <button class="tab" onclick="showTab('plan',this)">📊 Plan</button>
+  <button class="tab" onclick="showTab('gifts',this)">🎁 Gifts</button>
+  <button class="tab" onclick="showTab('coins',this)">🪙 Coins Req</button>
+  <button class="tab" onclick="showTab('frames',this)">🖼️ Frames/Headwear</button>
+  <button class="tab" onclick="showTab('levels',this)">🏆 Levels</button>
+  <button class="tab" onclick="showTab('pk',this)">⚔️ PK Battle</button>
+
 </div>
 
-<div id="users" class="section">
+<!-- USERS SECTION - MERGED v9 UI + v8.9 LOGIC -->
+<div id="users" class="section active">
   <div class="card">
-    <input id="searchBox" placeholder="Search name, mobile, gameId..." oninput="doSearch()">
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <button class="btn btn-dark" onclick="checkDuplicate()">⚡ Duplicate Check</button>
-      <button class="btn btn-y" onclick="loadRealUsers()">🔥 Load My Real Users from Firebase</button>
+    <input id="search" placeholder="Search name, mobile, gameId 7-digit, voiceNo, refCode..." oninput="renderUsers()" style="max-width:400px">
+    <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+      <button class="btn btn-dark" onclick="checkDupIds()">⚡ Duplicate Check</button>
+      <button class="btn btn-y" onclick="fixAllDup()">🛠️ Fix All View</button>
+      <button class="btn btn-dark" onclick="loadUsers()">🔄 Reload Real Data</button>
     </div>
-    <small style="color:#94a3b8">Ye button dabate hi tera asli Firebase data ayega, dummy nahi</small>
+    <div id="dupBox" class="dupBanner"><b style="color:#fbbf24">Duplicate IDs found:</b> <span id="dupList" style="color:#fff"></span></div>
+    <div id="dupBody"></div>
   </div>
-  <div id="usersGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="card">Loading real data... Firebase connect ho raha hai...</div></div>
+  <div id="usersGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"></div>
+  <table style="margin-top:12px"><thead><tr><th>#</th><th>User (Full)</th><th>Wallet/UPI</th><th>Premium</th><th>Ban</th><th>Action</th></tr></thead><tbody id="tbody"></tbody></table>
 </div>
 
-<div id="live" class="section" style="display:none"><div class="card">Live Ludo - RTDB ludoRooms</div><div id="liveBody"></div></div>
-<div id="voice" class="section" style="display:none"><div class="card">Voice Rooms - vRoomList</div><div id="voiceBody"></div></div>
+<div id="ludo" class="section"><div class="card"><b>🎲 Live Ludo Rooms</b> <button class="btn btn-y" onclick="loadLudo()">Refresh</button></div><div id="ludoBody"></div></div>
+<div id="voice" class="section"><div class="card"><b>🎤 Live Voice Rooms</b> <button class="btn btn-y" onclick="loadVoice()">Refresh</button></div><div id="voiceBody"></div></div>
+
+<div id="chats" class="section">
+  <div class="card"><b>💬 All Chats - v8.9 Full Feature</b><br>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+      <button class="tab" onclick="loadVoiceChats()">🎤 Voice Room Chat</button>
+      <button class="tab" onclick="loadLudoChats()">🎲 Ludo Room Chat</button>
+      <button class="tab" onclick="loadChats()">💬 Inbox Chat</button>
+      <button class="tab" style="background:#7c3aed;color:#fff" onclick="deepScanChats()">🔍 Deep Scan</button>
+      <button class="tab" style="background:#059669;color:#fff" onclick="searchChatText()">🔎 Text Search</button>
+    </div>
+    <input id="chatSearch" placeholder="Inbox: mobile likho (khali = sab)..." style="max-width:300px;margin-top:8px">
+  </div><div id="chatBody"></div>
+</div>
+
+<div id="team" class="section"><div class="card"><b>🌳 Team Tree</b><br><input id="teamSearch" placeholder="user ka mobile..." style="max-width:300px"><button class="btn btn-y" onclick="loadTeam()">Dekho</button></div><div id="teamBody"></div></div>
+<div id="premreq" class="section"><div class="card"><b>💎 Premium Requests</b> <button class="btn btn-y" onclick="loadPremReq()">Refresh</button></div><div id="premBody"></div></div>
+<div id="wallet" class="section"><div class="card"><b>💰 Wallet / UPI / History</b><br><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><button class="tab" onclick="loadEarnings()">Earnings</button><button class="tab" onclick="loadUpiHist()">UPI History</button><button class="tab" onclick="loadPremHist()">Premium History</button><button class="tab" onclick="loadBanHist()">Ban History</button></div></div><div id="walletBody"></div></div>
+<div id="suchna" class="section"><div class="card"><b>📢 Jaruri Suchna Editor</b><textarea id="suchnaText" rows="10" placeholder="Ek line me ek point..."></textarea><div style="display:flex;gap:8px"><button class="btn btn-g" onclick="saveSuchna()">SAVE</button><button class="btn btn-y" onclick="loadSuchna()">Reload</button></div></div></div>
+<div id="plan" class="section"><div class="card"><b>📊 Plan Chart Config</b><label>L1 Rs</label><input id="planL1" type="number"><label>L2 Rs</label><input id="planL2" type="number"><label>L3 Rs</label><input id="planL3" type="number"><label>Premium Price Rs</label><input id="planPrice" type="number"><div style="display:flex;gap:8px"><button class="btn btn-g" onclick="savePlan()">SAVE PLAN</button><button class="btn btn-y" onclick="loadPlan()">Reload</button></div></div></div>
+
+
+<div id="gifts" class="section"><div class="card"><b>🎁 Gifts Management - collection "gifts"</b><br>
+<input id="gName" placeholder="Gift name e.g. Rose"><input id="gImg" placeholder="Image URL transparent PNG"><input id="gPrice" type="number" placeholder="Coin price"><input id="gAnim" placeholder="Animation URL (optional)"><div style="display:flex;gap:8px"><button class="btn btn-g" onclick="addGift()">➕ Add Gift</button><button class="btn btn-y" onclick="loadGifts()">🔄 Load Gifts</button></div></div><div id="giftList"></div></div>
+
+<div id="coins" class="section"><div class="card"><b>🪙 Coin Requests + Wallet Add - REAL</b><br>
+<label>UPI ID for Payments</label><input id="upiSetter" value="ludo-premium@upi"><button class="btn btn-y" onclick="saveUPI()">Save UPI</button>
+<hr style="border-color:#1e293b;margin:10px 0">
+<label>Wallet Coins Add/Deduct - Direct</label>
+<input id="coinMobile" placeholder="User mobile"><input id="coinAmount" type="number" placeholder="Coins amount e.g. 1000"><div style="display:flex;gap:8px"><button class="btn btn-g" onclick="addCoinsDirect()">💰 Add Coins</button><button class="btn btn-r" onclick="deductCoinsDirect()">➖ Deduct Coins</button></div>
+<button class="btn btn-dark" onclick="loadCoinReq()" style="margin-top:8px">🔄 Load Coin Requests</button>
+</div><div id="coinList"></div></div>
+
+<div id="frames" class="section"><div class="card"><b>🖼️ Frames / Headwear / Avatar Frames - collection "frames"</b><br>
+<input id="fName" placeholder="Frame name e.g. Golden Frame"><input id="fImg" placeholder="Image URL transparent PNG"><select id="fType"><option value="frame">frame</option><option value="headwear">headwear</option><option value="avatar">avatar</option><option value="premium">premium</option><option value="level">level</option><option value="purchase">purchase</option></select><input id="fVal" type="number" placeholder="Level required OR Coin price"><input id="fPrice" type="number" placeholder="Price if purchase type"><div style="display:flex;gap:8px"><button class="btn btn-g" onclick="addFrame()">➕ Add Frame/Headwear</button><button class="btn btn-y" onclick="loadFrames()">🔄 Load Frames</button></div></div><div id="frameList"></div></div>
+
+<div id="levels" class="section"><div class="card"><b>🏆 Levels Config - config/levels</b><br><textarea id="levelData" rows="8" placeholder="1=0
+2=100
+3=300
+4=600"></textarea><div style="display:flex;gap:8px"><button class="btn btn-g" onclick="saveLevels()">💾 Save Levels</button><button class="btn btn-y" onclick="loadLevels()">Reload</button></div></div><div id="levelList"></div></div>
+
+<div id="pk" class="section"><div class="card"><b>⚔️ PK Battle - config/pk + RTDB pk_battles</b><br><input id="pkDur" type="number" placeholder="Duration sec e.g. 300"><input id="pkWin" type="number" placeholder="Winner coins e.g. 1000"><input id="pkLose" type="number" placeholder="Loser coins e.g. 100"><div style="display:flex;gap:8px"><button class="btn btn-g" onclick="savePK()">Save PK Config</button><button class="btn btn-y" onclick="loadPK()">Load Live PK</button></div></div><div id="pkList"></div></div>
+
+<!-- EDIT MODAL - FULL v8.9 + v9 FIX BUTTONS -->
+<div class="modal" id="editModal"><div>
+<h3 style="color:#38bdf8">✏️ Edit User - v9.3 Merged</h3>
+<div style="color:#888;font-size:12px;margin-bottom:8px">Editing: <b id="editTitle" style="color:#fff"></b></div>
+<label>Naam</label><input id="editName">
+<label>Gender</label><select id="editGender"><option value="">- select -</option><option value="male">male</option><option value="female">female</option><option value="other">other</option></select>
+<label>Mobile Number</label><input id="editMobile">
+<label>UPI ID</label><input id="editUpi">
+<label>Referral Code</label><input id="editRefCode">
+<label>Referred By</label><input id="editReferredBy">
+<label>Password</label><input id="editPassword">
+<label>GameID (7 digit) - v9 Fix Feature</label>
+<div style="display:flex;gap:6px"><input id="editGameId" maxlength="7" style="flex:1"><button type="button" class="btn btn-y" onclick="genUniqueId()">🎲 Nayi ID</button><button type="button" class="btn" style="background:#b45309;color:#fff" onclick="fixCurrentGameId()">Fix GameID</button></div>
+<label>Voice Room No (7 digit) - v9 Fix Feature</label>
+<div style="display:flex;gap:6px"><input id="editVoiceRoomNo" maxlength="7" style="flex:1"><button type="button" class="btn btn-y" onclick="genUniqueVoiceId()">🎲 Nayi ID</button><button type="button" class="btn" style="background:#b45309;color:#fff" onclick="fixCurrentVoiceId()">Fix VoiceNo</button></div>
+<div style="display:flex;gap:8px;margin-top:10px">
+<button class="btn btn-g" style="flex:1" onclick="saveEditUser()">💾 SAVE to Firebase</button>
+<button class="btn btn-dark" onclick="document.getElementById('editModal').style.display='none'">Cancel</button>
+</div>
+</div></div>
+
+<!-- BAN MODAL -->
+<div class="modal" id="banModal"><div>
+<h3 id="banTitle" style="color:#fbbf24">BAN User</h3>
+<select id="banDur"><option value="1">1 Day</option><option value="3">3 Day</option><option value="7">7 Day</option><option value="30">1 Month</option><option value="90">3 Month</option><option value="forever">Forever</option><option value="forever_device">Forever + Device</option></select>
+<textarea id="banReason" rows="3" placeholder="Reason..."></textarea>
+<label>Evidence Photo</label><input type="file" id="banPhoto" accept="image/*"><img id="banPreview" style="display:none;max-width:100%;border-radius:8px;margin-top:6px">
+<div style="display:flex;gap:8px;margin-top:8px"><button class="btn btn-r" onclick="confirmBan()">BAN KARO</button><button class="btn btn-dark" onclick="closeBan()">Cancel</button></div>
+</div></div>
+
+<!-- POWER MODAL - 10 POWERS -->
+<div class="modal" id="powerModal"><div>
+<h3 style="color:#fbbf24">Tag + Powers (v9 + v8.9)</h3>
+<label>Tag (ID ke neeche)</label><input id="powTag" placeholder="VIP / OWNER / STAR">
+<label><b>Protect Powers</b></label>
+<div id="powList">
+<label><input type="checkbox" value="no_kick">Koi kick nahi kar sakta</label>
+<label><input type="checkbox" value="no_mic_leave">Admin/Owner mic se nahi utar sakta</label>
+<label><input type="checkbox" value="join_locked">Kisi bhi lock room me ja sakta hai</label>
+<label><input type="checkbox" value="no_block">Koi block nahi kar sakta</label>
+<label><input type="checkbox" value="chat_without_add">Bina add kiye har user chat kar sakta hai</label>
+<label><input type="checkbox" value="no_mute">Koi mute/unmute nahi kar sakta</label>
+<label><input type="checkbox" value="mic_no_approval">Bina membership mic pe ja sakta hai</label>
+<label><input type="checkbox" value="can_mute_anyone"><b style="color:#fbbf24">Kisi bhi admin/member ko mute-unmute kar sakta hai</b></label>
+<label><input type="checkbox" value="can_remove_mic"><b style="color:#fbbf24">Kisi ko bhi mic se leave kara sakta hai</b></label>
+<label><input type="checkbox" value="can_kick_anyone"><b style="color:#fbbf24">Kisi ko bhi kick maar sakta hai</b></label>
+</div>
+<div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-g" onclick="savePowers()">SAVE</button><button class="btn btn-dark" onclick="document.getElementById('powerModal').style.display='none'">Cancel</button></div>
+</div></div>
 
 <script>
-// ===================== REAL FIREBASE CONFIG - NO DUMMY =====================
+// ===== FIREBASE CONFIG v9.3 =====
 const firebaseConfig = {
   apiKey: "AIzaSyAdpsbH2w8T-iMh6pfBIBmjrgybXtgS9zY",
   authDomain: "ludo-premium-50-e427e.firebaseapp.com",
@@ -76,193 +193,420 @@ const firebaseConfig = {
   messagingSenderId: "472725834005",
   appId: "1:472725834005:web:cacf6803be22d6708e411c"
 };
-
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const rtdb = firebase.database();
-let realUsers = [];
-
-document.getElementById('fbStatus').innerText = "✅ Firebase Connected: " + firebaseConfig.projectId;
+let allUsers = [];
+window._db = db; window._allUsers = allUsers;
 
 function showTab(id, el){
-  document.querySelectorAll('.section').forEach(s=>s.style.display='none');
-  document.getElementById(id).style.display='block';
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
-  if(el) el.classList.add('on');
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tabs .tab').forEach(t=>t.classList.remove('active','on'));
+  if(el){ el.classList.add('active'); el.classList.add('on'); }
+  if(id==='ludo') loadLudo();
+  if(id==='voice') loadVoice();
+  if(id==='premreq') loadPremReq();
+  if(id==='suchna') loadSuchna();
+  if(id==='plan') loadPlan();
 }
 
-// ===================== REAL DATA FETCHING - YAHAN TERA DATA AYEGA =====================
-async function loadRealUsers(){
-  document.getElementById('usersGrid').innerHTML = '<div class="card">🔄 Tera real data Firebase se load ho raha hai...</div>';
+
+// ====== WALLET COINS + GIFTS + FRAMES - v9.4 NEW ======
+async function addCoinsDirect(){
+  let mob=document.getElementById('coinMobile').value.trim();
+  let amt=parseInt(document.getElementById('coinAmount').value)||0;
+  if(!mob||!amt){ alert("Mobile aur Coins likho"); return; }
+  let u=allUsers.find(x=>(x.mobile||x.id)===mob);
+  if(!u){ alert("User nahi mila: "+mob); return; }
+  let newWallet=(u.wallet||0)+amt;
+  await db.collection("users").doc(u.id).update({wallet:newWallet, coins:newWallet});
+  alert("✅ "+amt+" coins add ho gaye "+u.name+" ko. New wallet: "+newWallet);
+  loadUsers();
+}
+async function deductCoinsDirect(){
+  let mob=document.getElementById('coinMobile').value.trim();
+  let amt=parseInt(document.getElementById('coinAmount').value)||0;
+  if(!mob||!amt){ alert("Mobile aur Coins likho"); return; }
+  let u=allUsers.find(x=>(x.mobile||x.id)===mob);
+  if(!u){ alert("User nahi mila"); return; }
+  let newWallet=Math.max(0,(u.wallet||0)-amt);
+  await db.collection("users").doc(u.id).update({wallet:newWallet, coins:newWallet});
+  alert("✅ "+amt+" coins deduct ho gaye. New: "+newWallet);
+  loadUsers();
+}
+async function loadCoinReq(){
+  let b=document.getElementById('coinList'); b.innerHTML="Loading coin_requests...";
   try{
-    const snap = await db.collection("users").limit(100).get();
-    realUsers = [];
-    snap.forEach(doc=>{
-      let d = doc.data();
-      realUsers.push({
-        id: doc.id,
-        name: d.name || d.displayName || "Unknown",
-        mobile: d.mobile || d.phone || doc.id,
-        gameId: d.gameId || d.gameID || d.gid || "0000000",
-        voiceNo: d.voiceNo || d.voiceRoomNo || d.vid || "0000000",
-        wallet: d.wallet || d.coins || 0,
-        premium: d.isPremium || d.premium || false,
-        banned: d.banned || false,
-        level: d.level || 1,
-        xp: d.xp || d.XP || 0,
-        tag: d.tag || "",
-        ref: d.refCode || d.referralCode || "",
-        upi: d.upiId || d.upi || "",
-        avatar: (d.name||"U").substring(0,2).toUpperCase()
-      });
+    let snap=await db.collection("coin_requests").where("status","==","pending").get();
+    if(snap.empty){ b.innerHTML="<div class='card'>Koi pending coin request nahi</div>"; return; }
+    let h=""; snap.forEach(d=>{
+      let m=d.data();
+      h+=`<div class='card'><b>🪙 ${m.mobile||d.id}</b> - ${m.amount||0} coins - ₹${m.rupees||""}<br><small>UPI: ${m.upi||""} | Status: ${m.status}</small><br><button class='btn btn-g' onclick="approveCoin('${d.id}',${m.amount||0},'${m.mobile||d.id}')">✅ Approve</button> <button class='btn btn-r' onclick="rejectCoin('${d.id}')">❌ Reject</button></div>`;
     });
-    
-    if(realUsers.length===0){
-      document.getElementById('usersGrid').innerHTML = '<div class="card" style="border-color:#fbbf24">⚠️ Firebase "users" collection me koi data nahi mila. Collection ka naam check kar - kya "users" hai ya kuch aur? Firestore console me dekh.</div>';
-    } else {
-      document.getElementById('realCount').innerText = "("+realUsers.length+" real)";
-      renderRealUsers(realUsers);
+    b.innerHTML=h;
+  }catch(e){ b.innerHTML="Error: "+e.message; }
+}
+async function approveCoin(reqId, amt, mobile){
+  if(!confirm(amt+" coins approve karna hai "+mobile+" ko?")) return;
+  let u=allUsers.find(x=>(x.mobile||x.id)===mobile);
+  if(u){
+    let newW=(u.wallet||0)+amt;
+    await db.collection("users").doc(u.id).update({wallet:newW});
+  }
+  await db.collection("coin_requests").doc(reqId).update({status:"approved", approvedAt:firebase.firestore.FieldValue.serverTimestamp()});
+  alert("Approved ✅"); loadCoinReq(); loadUsers();
+}
+async function rejectCoin(reqId){ await db.collection("coin_requests").doc(reqId).update({status:"rejected"}); loadCoinReq(); }
+async function saveUPI(){ let upi=document.getElementById('upiSetter').value.trim(); await db.collection("config").doc("wallet").set({upi:upi}, {merge:true}); alert("UPI Saved: "+upi); }
+
+async function loadGifts(){
+  let b=document.getElementById('giftList'); b.innerHTML="Loading gifts...";
+  let snap=await db.collection("gifts").get();
+  let h=""; snap.forEach(d=>{ let m=d.data(); h+=`<div class='card'>🎁 <b>${m.name||d.id}</b> - ${m.price||m.coins||0} coins<br><img src="${m.image||m.img||""}" style="width:50px;height:50px;border-radius:8px"><br><button class='btn btn-r' onclick="deleteGift('${d.id}')">Delete</button></div>`; });
+  b.innerHTML=h||"<div class='card'>Koi gifts nahi</div>";
+}
+async function addGift(){
+  let name=document.getElementById('gName').value.trim();
+  let img=document.getElementById('gImg').value.trim();
+  let price=parseInt(document.getElementById('gPrice').value)||0;
+  let anim=document.getElementById('gAnim').value.trim();
+  if(!name||!img){ alert("Name aur Image URL likho"); return; }
+  await db.collection("gifts").add({name:name, image:img, img:img, price:price, coins:price, animation:anim, createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+  alert("Gift Added ✅"); loadGifts();
+}
+async function deleteGift(id){ if(!confirm("Delete gift?")) return; await db.collection("gifts").doc(id).delete(); loadGifts(); }
+
+async function loadFrames(){
+  let b=document.getElementById('frameList'); b.innerHTML="Loading frames/headwear...";
+  let snap=await db.collection("frames").get();
+  let h=""; snap.forEach(d=>{ let m=d.data(); h+=`<div class='card'>🖼️ <b>${m.name||d.id}</b> - Type: ${m.type||""} - Val: ${m.value||m.level||m.price||0}<br><img src="${m.image||m.img||""}" style="width:80px;height:80px;border-radius:8px"><br><button class='btn btn-r' onclick="deleteFrame('${d.id}')">Delete</button></div>`; });
+  b.innerHTML=h||"<div class='card'>Koi frames/headwear nahi</div>";
+}
+async function addFrame(){
+  let name=document.getElementById('fName').value.trim();
+  let img=document.getElementById('fImg').value.trim();
+  let type=document.getElementById('fType').value;
+  let val=parseInt(document.getElementById('fVal').value)||0;
+  let price=parseInt(document.getElementById('fPrice').value)||0;
+  if(!name||!img){ alert("Name aur Image likho"); return; }
+  await db.collection("frames").add({name:name, image:img, img:img, type:type, value:val, price:price||val, level:val, createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+  alert("Frame/Headwear Added ✅"); loadFrames();
+}
+async function deleteFrame(id){ if(!confirm("Delete frame?")) return; await db.collection("frames").doc(id).delete(); loadFrames(); }
+
+async function loadLevels(){
+  try{
+    let d=await db.collection("config").doc("levels").get();
+    if(d.exists){
+      let data=d.data();
+      let txt="";
+      if(data.levels) txt=Object.entries(data.levels).map(([k,v])=>k+"="+v).join("\n");
+      else txt=JSON.stringify(data, null, 2);
+      document.getElementById('levelData').value=txt;
+      document.getElementById('levelList').innerHTML="<div class='card'>Current levels loaded</div>";
     }
-  } catch(e){
-    document.getElementById('usersGrid').innerHTML = '<div class="card" style="color:#ef4444">❌ Firebase Error: '+e.message+'<br><br>1. Firebase Console > Firestore > Rules me "allow read, write: if true" kar<br>2. Auth domain github.io ko allow kar</div>';
-    console.error(e);
+  }catch(e){}
+}
+async function saveLevels(){
+  let txt=document.getElementById('levelData').value.trim();
+  let levels={};
+  txt.split("\n").forEach(line=>{
+    let [k,v]=line.split("="); if(k&&v) levels[k.trim()]=parseInt(v.trim())||0;
+  });
+  await db.collection("config").doc("levels").set({levels:levels, raw:txt});
+  alert("Levels Saved ✅");
+}
+
+async function loadPK(){
+  let b=document.getElementById('pkList'); b.innerHTML="Loading PK battles from RTDB...";
+  try{
+    let snap=await rtdb.ref("pk_battles").get(); let val=snap.val()||{};
+    let h=""; Object.keys(val).forEach(id=>{
+      let m=val[id];
+      h+=`<div class='card'>⚔️ PK: ${id}<br>Players: ${JSON.stringify(m.players||[])}<br>Status: ${m.status||""}<br><button class='btn btn-r' onclick="endPK('${id}')">End PK</button></div>`;
+    });
+    b.innerHTML=h||"<div class='card'>Koi live PK nahi</div>";
+  }catch(e){ b.innerHTML="Error: "+e.message; }
+}
+async function savePK(){
+  let dur=parseInt(document.getElementById('pkDur').value)||300;
+  let win=parseInt(document.getElementById('pkWin').value)||1000;
+  let lose=parseInt(document.getElementById('pkLose').value)||100;
+  await db.collection("config").doc("pk").set({duration:dur, winnerCoins:win, loserCoins:lose});
+  alert("PK Config Saved ✅");
+}
+async function endPK(id){ if(!confirm("End PK "+id+"?")) return; await rtdb.ref("pk_battles/"+id).remove(); loadPK(); }
+
+async function loadUsers(){
+  document.getElementById('jsStatus').innerText = "⏳ Real users loading from Firestore...";
+  try{
+    let snap;
+    try{ snap = await db.collection("users").orderBy("createdAt","desc").get(); }catch(e){ snap = await db.collection("users").get(); }
+    allUsers = [];
+    snap.forEach(d=>{ allUsers.push(Object.assign({id:d.id}, d.data())); });
+    window._allUsers = allUsers;
+    renderUsers();
+    document.getElementById('jsStatus').innerHTML = "✅ v9.3 MERGED - "+allUsers.length+" real users loaded - v8.9 features + v9.2 UI";
+    document.getElementById('jsStatus').style.color = "#22c55e";
+  }catch(e){
+    document.getElementById('jsStatus').innerText = "❌ Error: "+e.message;
   }
 }
 
+function renderUsers(){
+  var s = document.getElementById('search').value.trim().toLowerCase();
+  var tb = document.getElementById('tbody');
+  var grid = document.getElementById('usersGrid');
+  var filtered = allUsers.filter(u=>{
+    if(!s) return true;
+    return (u.mobile||u.id||"").toLowerCase().includes(s) || (u.name||"").toLowerCase().includes(s) || (u.referralCode||"").toLowerCase().includes(s) || (u.gameId||"").toLowerCase().includes(s) || (u.voiceRoomNo||"").toLowerCase().includes(s);
+  });
+  document.getElementById('total').innerText = allUsers.length;
+  document.getElementById('prem').innerText = allUsers.filter(u=>u.isPremium).length;
+  document.getElementById('banned').innerText = allUsers.filter(u=>u.banned).length;
 
-function renderRealUsers(list){
-  let html = "";
-  list.forEach(u=>{
-    html += `
-    <div class="card">
-      <div style="display:flex;gap:10px">
-        <div class="avatar">${u.avatar}</div>
-        <div style="flex:1">
-          <b>${u.name}</b> ${u.premium?'<span style="background:#fbbf24;color:#000;padding:2px 6px;border-radius:8px;font-size:10px">👑 PREMIUM</span>':''}<br>
-          <small style="color:#94a3b8">Lv.${u.level} • ${u.xp} XP</small><br>
-          <small>📱 ${u.mobile} • 💰 ₹${u.wallet}<br>🎮 GameID: ${u.gameId} • 🎤 VoiceNo: ${u.voiceNo}<br>🔗 ${u.ref} • UPI: ${u.upi}</small>
-        </div>
-      </div>
+  // v9 CARD GRID
+  let gh = "";
+  filtered.slice(0,20).forEach(u=>{
+    let av = (u.name||"U").substring(0,2).toUpperCase();
+    let premBadge = u.isPremium ? '<span style="background:#fbbf24;color:#000;padding:2px 6px;border-radius:8px;font-size:10px;font-weight:900">👑 PREMIUM</span>' : '';
+    let tagBadge = u.tag ? '<span style="background:#7c3aed;color:#fff;padding:2px 6px;border-radius:8px;font-size:10px">'+u.tag+'</span>' : '';
+    let dupWarn = "";
+    gh += `<div class="card">
+      <div style="display:flex;gap:10px"><div class="avatar">${av}</div><div style="flex:1"><b>${u.name||""}</b> ${premBadge} ${tagBadge}<br><small style="color:#94a3b8">Lv.${u.level||1} • ${u.xp||0} XP</small><br><small>📱 ${u.mobile||u.id} • 💰 ₹${u.wallet||0}<br>🎮 GameID: <b style="color:#fbbf24">${u.gameId||"-"}</b> • 🎤 VoiceNo: ${u.voiceRoomNo||"-"}<br>🔗 ${u.referralCode||""} ← ${u.referredBy||"Direct"} • UPI: ${u.upi||"-"}</small></div></div>
       <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px">
-        <button class="btn btn-dark" onclick="editUser('${u.id}')">✏️ Edit</button>
-        <button class="btn btn-y" onclick="walletUser('${u.id}')">🪙 Wallet</button>
-        <button class="btn ${u.premium?'btn-g':'btn-r'}" onclick="togglePremium('${u.id}')">${u.premium?'Premium ON':'Premium OFF'}</button>
-        <button class="btn ${u.banned?'btn-g':'btn-r'}" onclick="toggleBan('${u.id}')">${u.banned?'Unban':'Ban'}</button>
-        <button class="btn btn-v" onclick="fixId('${u.id}','gameId')">Fix GameID</button>
+        <button class="btn btn-dark" onclick="openEdit('${u.id}')">✏️ Edit</button>
+        <button class="btn btn-y" onclick="editWallet('${u.id}')">🪙 Wallet</button>
+        <button class="btn ${u.isPremium?'btn-g':'btn-r'}" onclick="setPremium('${u.id}',${!u.isPremium})">${u.isPremium?'Premium ON':'Premium OFF'}</button>
+        <button class="btn ${u.banned?'btn-unban':'btn-ban'}" onclick="${u.banned?`unban('${u.id}')`:`openBan('${u.id}','${u.mobile||u.id}')`}">${u.banned?'Unban':'Ban'}</button>
+        <button class="btn btn-v" onclick="openPowers('${u.id}')">🛡️ Tag/Power</button>
+        <button class="btn btn-y" style="background:#b45309" onclick="fixDupId('${u.id}','gameId')">Fix GameID</button>
+        <button class="btn btn-y" style="background:#92400e" onclick="fixDupId('${u.id}','voiceRoomNo')">Fix VoiceNo</button>
       </div>
+      ${dupWarn}
     </div>`;
   });
-  document.getElementById('usersGrid').innerHTML = html;
+  grid.innerHTML = gh || "<div class='card'>No users</div>";
+
+  // v8.9 TABLE
+  let h = "";
+  filtered.slice(0,200).forEach((u,i)=>{
+    let isBan = u.banned===true;
+    let pw = (u.powers||[]).length ? "<br><small style='color:#fbbf24'>⚡"+(u.powers||[]).length+" powers</small>" : "";
+    h += "<tr"+(isBan?" style='background:#450a0a'":"")+">";
+    h += "<td>"+(i+1)+"</td>";
+    h += "<td><b>"+(u.name||"")+"</b><br>"+(u.mobile||u.id)+"<br><small>Code:<b style='color:#fbbf24'>"+(u.referralCode||u.id)+"</b> | By:"+(u.referredBy||"Direct")+"<br>ID:<b style='color:#38bdf8'>"+(u.gameId||"-")+"</b> | Voice:<b style='color:#22c55e'>"+(u.voiceRoomNo||"-")+"</b><br>Tag:<b style='color:#fbbf24'>"+(u.tag||"-")+"</b>"+pw+"</small></td>";
+    h += "<td>₹"+(u.wallet||0)+" <button class='btn btn-y' onclick=\"editWallet('"+u.id+"')\">✏️</button><br><small>"+(u.upi||"-")+"</small></td>";
+    h += "<td>"+(u.isPremium?"TRUE ✅":"FALSE ❌")+"<br><button class='btn btn-true' onclick=\"setPremium('"+u.id+"',true)\">ON</button> <button class='btn btn-false' onclick=\"setPremium('"+u.id+"',false)\">OFF</button></td>";
+    h += "<td><small>"+(isBan?(u.banType||"BAN"):"-")+"</small></td>";
+    h += "<td><button class='btn btn-unban' onclick=\"openEdit('"+u.id+"')\">EDIT</button><br><button class='btn btn-y' onclick=\"openPowers('"+u.id+"')\">TAG/POWER</button><br>"+(isBan?"<button class='btn btn-unban' onclick=\"unban('"+u.id+"')\">UNBAN</button>":"<button class='btn btn-ban' onclick=\"openBan('"+u.id+"','"+(u.mobile||u.id)+"')\">BAN</button>")+"<br><button class='btn btn-false' onclick=\"deleteUser('"+u.id+"')\">🗑 DEL</button></td>";
+    h += "</tr>";
+  });
+  tb.innerHTML = h;
 }
 
-
-function doSearch(){
-  let q = document.getElementById('searchBox').value.toLowerCase();
-  let filtered = realUsers.filter(u=> u.name.toLowerCase().includes(q) || u.mobile.includes(q) || u.gameId.includes(q));
-  renderRealUsers(filtered);
-}
-
-
-function editUser(id){
-  let u = realUsers.find(x=>x.id===id);
-  if(!u) return alert("User not found");
-  document.getElementById('eId').value = u.id;
-  document.getElementById('eName').value = u.name;
-  document.getElementById('eMobile').value = u.mobile;
-  document.getElementById('eGameId').value = u.gameId;
-  document.getElementById('eVoiceNo').value = u.voiceNo;
-  document.getElementById('eWallet').value = u.wallet;
-  document.getElementById('eUpi').value = u.upi;
-  document.getElementById('eRef').value = u.ref;
-  document.getElementById('eLevel').value = u.level;
-  document.getElementById('eXp').value = u.xp;
+// ALL v8.9 FUNCTIONS + v9 FIX
+let editTarget=null, banTarget=null, banPhotoData="", powTarget=null;
+function openEdit(id){
+  let u = allUsers.find(x=>x.id===id); if(!u) return;
+  editTarget=id;
+  document.getElementById('editTitle').innerText=id;
+  document.getElementById('editName').value=u.name||"";
+  document.getElementById('editGender').value=u.gender||"";
+  document.getElementById('editMobile').value=u.mobile||id;
+  document.getElementById('editUpi').value=u.upi||"";
+  document.getElementById('editRefCode').value=u.referralCode||"";
+  document.getElementById('editReferredBy').value=(u.referredBy==="Direct"?"":u.referredBy)||"";
+  document.getElementById('editPassword').value=u.password||"";
+  document.getElementById('editGameId').value=u.gameId||"";
+  document.getElementById('editVoiceRoomNo').value=u.voiceRoomNo||"";
   document.getElementById('editModal').style.display='flex';
 }
-function closeEdit(){ document.getElementById('editModal').style.display='none'; }
-
-async function saveEditReal(){
-  let id = document.getElementById('eId').value;
+async function saveEditUser(){
+  let u = allUsers.find(x=>x.id===editTarget); if(!u) return;
+  let newMobile = document.getElementById('editMobile').value.trim();
+  let newRefCode = document.getElementById('editRefCode').value.trim()||newMobile;
   let data = {
-    name: document.getElementById('eName').value,
-    mobile: document.getElementById('eMobile').value,
-    gameId: document.getElementById('eGameId').value,
-    voiceNo: document.getElementById('eVoiceNo').value,
-    wallet: Number(document.getElementById('eWallet').value)||0,
-    upiId: document.getElementById('eUpi').value,
-    refCode: document.getElementById('eRef').value,
-    level: Number(document.getElementById('eLevel').value)||1,
-    xp: Number(document.getElementById('eXp').value)||0
+    name: document.getElementById('editName').value.trim(),
+    gender: document.getElementById('editGender').value,
+    mobile: newMobile,
+    upi: document.getElementById('editUpi').value.trim(),
+    referralCode: newRefCode,
+    referredBy: document.getElementById('editReferredBy').value.trim()||"Direct",
+    password: document.getElementById('editPassword').value,
+    gameId: document.getElementById('editGameId').value.trim(),
+    voiceRoomNo: document.getElementById('editVoiceRoomNo').value.trim()
   };
-  try{
-    await db.collection("users").doc(id).update(data);
-    alert("✅ Save ho gaya Firebase me!");
-    closeEdit();
-    loadRealUsers();
-  }catch(e){
-    alert("❌ Error: "+e.message);
-    console.error(e);
+  // duplicate check
+  if(data.gameId){ let dup = allUsers.find(x=>x.id!==editTarget && String(x.gameId||"")===data.gameId); if(dup){ alert("❌ GameID duplicate!"); return; } }
+  if(data.voiceRoomNo){ let dupV = allUsers.find(x=>x.id!==editTarget && String(x.voiceRoomNo||"")===data.voiceRoomNo); if(dupV){ alert("❌ VoiceNo duplicate!"); return; } }
+  if(newMobile!==editTarget){
+    if(!confirm("Mobile badal rahe ho! "+editTarget+" → "+newMobile+" Pakka?")) return;
+    let chk = await db.collection("users").doc(newMobile).get(); if(chk.exists()){ alert("Is number par account hai!"); return; }
+    let copy = Object.assign({}, u, data); delete copy.id;
+    await db.collection("users").doc(newMobile).set(copy);
+    await db.collection("users").doc(editTarget).delete();
+    location.reload();
+  } else {
+    await db.collection("users").doc(editTarget).update(data);
+    Object.assign(u,data);
+    document.getElementById('editModal').style.display='none';
+    renderUsers(); alert("Save ✅");
   }
 }
-
-function walletUser(id){
-  let amt = prompt("Kitna wallet add karna hai? (Rs)");
-  if(!amt) return;
-  let u = realUsers.find(x=>x.id===id);
-  let newWallet = (u.wallet||0) + Number(amt);
-  db.collection("users").doc(id).update({wallet:newWallet}).then(()=>{ alert("Wallet update ✅"); loadRealUsers(); });
+function genUniqueId(){ let nid=""; for(let t=0;t<60;t++){ nid=String(Math.floor(1000000+Math.random()*9000000)); if(!allUsers.some(x=>String(x.gameId||"")===nid)) break; } document.getElementById('editGameId').value=nid; }
+function genUniqueVoiceId(){ let nid=""; for(let t=0;t<60;t++){ nid=String(Math.floor(1000000+Math.random()*9000000)); if(!allUsers.some(x=>String(x.voiceRoomNo||"")===nid)) break; } document.getElementById('editVoiceRoomNo').value=nid; }
+function fixCurrentGameId(){ genUniqueId(); }
+function fixCurrentVoiceId(){ genUniqueVoiceId(); }
+function checkDupIds(){
+  let b = document.getElementById('dupBody'); let dupBox = document.getElementById('dupBox'); let dupList = document.getElementById('dupList'); let dupCount = document.getElementById('dupCount');
+  let seen={}, dups=[];
+  allUsers.forEach(u=>{
+    [["gameId",u.gameId],["voiceRoomNo",u.voiceRoomNo]].forEach(pair=>{
+      let f=pair[0], v=String(pair[1]||"").trim(); if(!v) return;
+      let k=f+":"+v;
+      if(seen[k]) dups.push({v:v,f:f,bid:u.id,bname:(u.name||"")+" ("+(u.mobile||u.id)+")",aname:seen[k].name});
+      else seen[k]={name:(u.name||"")+" ("+(u.mobile||u.id)+")"};
+    });
+  });
+  if(!dups.length){ b.innerHTML="<div class='card' style='border-color:#22c55e'><b style='color:#22c55e'>✅ Sab IDs unique hain</b></div>"; dupBox.style.display='none'; dupCount.style.display='none'; return; }
+  dupBox.style.display='block'; dupList.innerText=dups.map(d=>d.v).join(", "); dupCount.style.display='inline'; dupCount.innerText=dups.length;
+  let h="<div class='card' style='border-color:#ef4444'><b style='color:#ef4444'>❌ "+dups.length+" duplicate ID mile!</b></div>";
+  dups.forEach(d=>{ h+="<div class='card'><b>ID: "+d.v+"</b> <small>("+d.f+")</small><br><small>👤 "+d.aname+"<br>👤 "+d.bname+"</small><br><button class='btn btn-y' onclick=\"fixDupId('"+d.bid+"','"+d.f+"')\">🎲 Nayi unique ID do</button> <button class='btn' style='background:#b45309;color:#fff' onclick=\"fixDupId('"+d.bid+"','"+d.f+"')\">Fix "+d.f+"</button></div>"; });
+  b.innerHTML=h;
 }
-function togglePremium(id){
-  let u = realUsers.find(x=>x.id===id);
-  db.collection("users").doc(id).update({isPremium:!u.premium, premium:!u.premium}).then(()=> loadRealUsers());
+async function fixDupId(id, field){
+  let nid=""; for(let t=0;t<60;t++){ nid=String(Math.floor(1000000+Math.random()*9000000)); if(!allUsers.some(x=>String(x[field]||"")===nid)) break; }
+  let up={}; up[field]=nid;
+  await db.collection("users").doc(id).update(up);
+  let u=allUsers.find(x=>x.id===id); if(u) u[field]=nid;
+  renderUsers(); checkDupIds(); alert("✅ Nayi unique ID: "+nid);
 }
-function toggleBan(id){
-  let u = realUsers.find(x=>x.id===id);
-  db.collection("users").doc(id).update({banned:!u.banned}).then(()=> loadRealUsers());
+function fixAllDup(){ checkDupIds(); }
+async function deleteUser(id){ if(!confirm("DELETE "+id+"?")) return; if(!confirm("Pakka?")) return; await db.collection("users").doc(id).delete(); location.reload(); }
+async function editWallet(id){ let u=allUsers.find(x=>x.id===id); let v=prompt("Wallet kitna set karna hai? (abhi: ₹"+(u.wallet||0)+")",u.wallet||0); if(v===null) return; let amt=parseFloat(v)||0; await db.collection("users").doc(id).update({wallet:amt}); u.wallet=amt; renderUsers(); }
+function openPowers(id){ let u=allUsers.find(x=>x.id===id); powTarget=id; document.getElementById('powTag').value=u.tag||""; let have=u.powers||[]; document.querySelectorAll("#powList input").forEach(c=>{ c.checked=have.includes(c.value); }); document.getElementById('powerModal').style.display='flex'; }
+async function savePowers(){ let tag=document.getElementById('powTag').value.trim(); let powers=[]; document.querySelectorAll("#powList input:checked").forEach(c=>{ powers.push(c.value); }); await db.collection("users").doc(powTarget).update({tag:tag,powers:powers}); let u=allUsers.find(x=>x.id===powTarget); if(u){ u.tag=tag; u.powers=powers; } document.getElementById('powerModal').style.display='none'; renderUsers(); alert("Tag + Powers save ✅"); }
+function openBan(id,m){ banTarget=id; document.getElementById('banTitle').innerText="BAN: "+m; document.getElementById('banModal').style.display='flex'; }
+function closeBan(){ document.getElementById('banModal').style.display='none'; }
+async function confirmBan(){ let dur=document.getElementById('banDur').value, reason=document.getElementById('banReason').value.trim(); if(!reason){ alert("Reason likho"); return; } await db.collection("users").doc(banTarget).update({banned:true,banType:dur,banReason:reason,bannedAt:firebase.firestore.FieldValue.serverTimestamp()}); document.getElementById('banModal').style.display='none'; location.reload(); }
+async function unban(id){ if(!confirm("UNBAN?")) return; await db.collection("users").doc(id).update({banned:false}); location.reload(); }
+async function setPremium(id,val){ if(!confirm(val?"Premium ON?":"Premium OFF?")) return; await db.collection("users").doc(id).update({isPremium:val}); location.reload(); }
+
+// RTDB
+async function loadLudo(){
+  let b=document.getElementById('ludoBody'); b.innerHTML="Loading...";
+  try{
+    let snap=await rtdb.ref("/").get(); let val=snap.val()||{}; let rooms=[];
+    for(let k of Object.keys(val)){ if(/^\d{4}$/.test(k)) rooms.push({id:k,data:val[k]}); }
+    document.getElementById('liveL').innerText=rooms.length;
+    let h=""; rooms.forEach(r=>{ h+=`<div class='card'><b>🎲 Room: ${r.id}</b><br><button class='btn btn-r' onclick="deleteRoom('${r.id}')">🗑 DELETE</button></div>`; });
+    b.innerHTML=h||"Koi live room nahi";
+  }catch(e){ b.innerHTML="Error: "+e.message; }
 }
-
-function checkDuplicate(){
-
-  let map = {}; let dups = [];
-  realUsers.forEach(u=>{ map[u.gameId] = (map[u.gameId]||0)+1; });
-  Object.keys(map).forEach(k=>{ if(map[k]>1) dups.push(k); });
-  alert(dups.length>0 ? "Duplicate IDs: "+dups.join(", ") : "No duplicates - sab sahi hai");
+async function deleteRoom(rid){ if(!confirm("Room "+rid+" DELETE?")) return; await rtdb.ref(rid).remove(); alert("Delete ✅"); loadLudo(); }
+async function loadVoice(){
+  let b=document.getElementById('voiceBody'); b.innerHTML="Loading...";
+  try{
+    let snap=await rtdb.ref("/").get(); let val=snap.val()||{}; let rooms=[];
+    ["vRoomList","vRooms","voiceRooms"].forEach(k=>{ if(val[k]) Object.keys(val[k]).forEach(id=>rooms.push({id:id,parent:k})); });
+    document.getElementById('liveV').innerText=rooms.length;
+    let h=""; rooms.forEach(r=>{ h+=`<div class='card'><b>🎤 Room: ${r.id}</b><br><button class='btn btn-r' onclick="deleteVoiceRoom('${r.parent}','${r.id}')">🗑 DELETE</button></div>`; });
+    b.innerHTML=h||"Koi voice room nahi";
+  }catch(e){ b.innerHTML="Error: "+e.message; }
 }
+async function deleteVoiceRoom(parent,rid){ if(!confirm("Voice room "+rid+" DELETE?")) return; await rtdb.ref(parent+"/"+rid).remove(); alert("Delete ✅"); loadVoice(); }
 
-function checkDuplicateOld(){
-  let map = {}; let dups = [];
-  realUsers.forEach(u=>{ map[u.gameId] = (map[u.gameId]||0)+1; });
-  Object.keys(map).forEach(k=>{ if(map[k]>1) dups.push(k); });
-  alert(dups.length>0 ? "Duplicate IDs: "+dups.join(", ") : "No duplicates - sab sahi hai");
+// CHATS - v8.9 FULL
+async function loadVoiceChats(){
+  let b=document.getElementById('chatBody'); b.innerHTML="Loading voice chats...";
+  try{
+    let snap=await rtdb.ref("/").get(); let val=snap.val()||{}; let h="";
+    ["vRoomList","vRooms","voiceRooms"].forEach(pk=>{
+      let vr=val[pk]||{}; Object.keys(vr).forEach(roomNo=>{
+        let room=vr[roomNo]||{}; if(!room["chat"]) return; let msgs=Object.values(room["chat"]); if(!msgs.length) return;
+        h+=`<div class='card'><b>🎤 Voice Room: ${roomNo}</b> (${msgs.length} msgs)<br>`;
+        msgs.slice(-30).forEach(m=>{ h+=`<small style='color:#fbbf24'>${m.name||m.player||""}:</small> ${m.text||m.msg||""}<br>`; });
+        h+="</div>";
+      });
+    });
+    b.innerHTML=h||"Koi voice chat nahi";
+  }catch(e){ b.innerHTML="Error: "+e.message; }
 }
+async function loadLudoChats(){
+  let b=document.getElementById('chatBody'); b.innerHTML="Loading ludo chats...";
+  try{
+    let snap=await rtdb.ref("/").get(); let val=snap.val()||{}; let h="";
+    Object.keys(val).forEach(k=>{
+      if(!/^\d{4}$/.test(k)) return; let chat=((val[k]||{})["chat"])||{}; let msgs=Object.values(chat).filter(m=>m&&m.player&&m.player!=="System"); if(!msgs.length) return;
+      h+=`<div class='card'><b>🎲 Ludo Room: ${k}</b> (${msgs.length} msgs)<br>`;
+      msgs.slice(-30).forEach(m=>{ h+=`<small style='color:#fbbf24'>${m.player||m.name||""}:</small> ${m.msg||m.text||""}<br>`; });
+      h+="</div>";
+    });
+    b.innerHTML=h||"Koi ludo chat nahi";
+  }catch(e){ b.innerHTML="Error: "+e.message; }
+}
+async function loadChats(){
+  let b=document.getElementById('chatBody'); let mobFilter=document.getElementById('chatSearch').value.trim();
+  b.innerHTML="Loading friend chats...";
+  try{
+    let targetUsers=allUsers;
+    if(mobFilter) targetUsers=allUsers.filter(u=>(u.mobile||u.id||"").includes(mobFilter));
+    let foundChats=[]; let checked=0;
+    for(let i=0;i<targetUsers.length;i++){
+      let u1=targetUsers[i]; let m1=(u1.mobile||u1.id||"").toString().trim(); if(!m1) continue;
+      for(let j=0;j<allUsers.length;j++){
+        let u2=allUsers[j]; let m2=(u2.mobile||u2.id||"").toString().trim(); if(!m2||m1===m2) continue;
+        let pair=[m1,m2].sort(); let chatId=pair[0]+"_"+pair[1];
+        if(foundChats.some(c=>c.chatId===chatId)) continue; checked++;
+        try{
+          let msnap=await db.collection("friend_chats").doc(chatId).collection("messages").limit(50).get();
+          let msgs=[]; msnap.forEach(d=>{ msgs.push(d.data()); });
+          if(msgs.length) foundChats.push({chatId:chatId,m1:m1,m2:m2,name1:u1.name||m1,name2:u2.name||m2,msgs:msgs});
+        }catch(e){}
+      }
+      b.innerHTML="Loading... "+(i+1)+"/"+targetUsers.length+" checked, "+foundChats.length+" chats mili";
+    }
+    if(!foundChats.length){ b.innerHTML="<div class='card'>❌ Koi chat nahi mili ("+checked+" pairs checked)</div>"; return; }
+    let h="<div class='card'><b style='color:#22c55e'>💬 "+foundChats.length+" chats mili!</b></div>";
+    foundChats.forEach(c=>{
+      h+=`<div class='card'><b>💬 ${c.name1} ↔ ${c.name2}</b> (${c.msgs.length} msgs)<br><small>${c.chatId}</small></div>`;
+    });
+    b.innerHTML=h;
+  }catch(e){ b.innerHTML="Error: "+e.message; }
+}
+async function deepScanChats(){ document.getElementById('chatBody').innerHTML="Deep scan... RTDB check ho raha hai"; loadVoiceChats(); }
+async function searchChatText(){ let t=prompt("Kaunsa text dhoondu?","kese ho"); if(!t) return; alert("Search: "+t+" - RTDB scan karega"); loadVoiceChats(); }
 
-// Auto load real data on start
-loadRealUsers();
+async function loadTeam(){
+  let mob=document.getElementById('teamSearch').value.trim(); let b=document.getElementById('teamBody');
+  if(!mob){ b.innerHTML="Mobile daalo"; return; }
+  b.innerHTML="Loading...";
+  let l1=await db.collection("users").where("referredBy","==",mob).get();
+  let h1=""; l1.forEach(d=>{ let m=d.data(); h1+="<div>L1: "+(m.name||"")+" "+(m.mobile||d.id)+"</div>"; });
+  b.innerHTML="<div class='card'><b>L1:</b> "+l1.size+"</div><div class='card'>"+h1+"</div>";
+}
+async function loadPremReq(){
+  let b=document.getElementById('premBody'); b.innerHTML="Loading...";
+  let snap=await db.collection("premium_requests").where("status","==","CHECK").get();
+  let h=""; snap.forEach(d=>{ let m=d.data(); h+=`<div class='card'><b>${m.mobile||d.id}</b> | ₹${m.amount||""}<br><button class='btn btn-g' onclick="setPremium('${d.id}',true)">APPROVE</button> <button class='btn btn-r' onclick="rejectPrem('${d.id}')">REJECT</button></div>`; });
+  b.innerHTML=h||"Koi pending nahi";
+}
+async function rejectPrem(id){ await db.collection("premium_requests").doc(id).update({status:"REJECTED"}); loadPremReq(); }
+async function loadEarnings(){ let b=document.getElementById('walletBody'); b.innerHTML="Loading..."; let snap=await db.collection("earnings").limit(100).get(); let h="<table><tr><th>To</th><th>Amt</th><th>Type</th></tr>"; snap.forEach(d=>{ let m=d.data(); h+=`<tr><td>${m.to||""}</td><td>₹${m.amount||0}</td><td>${m.type||""}</td></tr>`; }); b.innerHTML=h+"</table>"; }
+async function loadUpiHist(){ let b=document.getElementById('walletBody'); b.innerHTML="Loading..."; let snap=await db.collection("upi_history").limit(100).get(); let h="<table><tr><th>Mobile</th><th>Change</th></tr>"; snap.forEach(d=>{ let m=d.data(); h+=`<tr><td>${m.mobile||""}</td><td>${m.oldUpi||""} → ${m.newUpi||""}</td></tr>`; }); b.innerHTML=h+"</table>"; }
+async function loadPremHist(){ let b=document.getElementById('walletBody'); b.innerHTML="Loading..."; let snap=await db.collection("premium_history").limit(100).get(); let h="<table><tr><th>Mobile</th><th>Action</th></tr>"; snap.forEach(d=>{ let m=d.data(); h+=`<tr><td>${m.mobile||""}</td><td>${m.action||""}</td></tr>`; }); b.innerHTML=h+"</table>"; }
+async function loadBanHist(){ let b=document.getElementById('walletBody'); b.innerHTML="Loading..."; let snap=await db.collection("ban_history").get(); let h=""; snap.forEach(d=>{ let m=d.data(); h+=`<div class='card'><b>${m.mobile}</b> - ${m.banType}<br><small>${m.reason||""}</small></div>`; }); b.innerHTML=h||"Koi history nahi"; }
+async function loadSuchna(){ try{ let d=await db.collection("config").doc("jaruri_suchna").get(); if(d.exists) document.getElementById('suchnaText').value=(d.data().points||[]).join("\n"); }catch(e){} }
+async function saveSuchna(){ let pts=document.getElementById('suchnaText').value.split("\n").map(s=>s.trim()).filter(Boolean); await db.collection("config").doc("jaruri_suchna").set({points:pts}); alert("Save ✅"); }
+async function loadPlan(){ try{ let d=await db.collection("config").doc("plan").get(); if(d.exists){ let m=d.data(); document.getElementById('planL1').value=m.l1||100; document.getElementById('planL2').value=m.l2||50; document.getElementById('planL3').value=m.l3||25; document.getElementById('planPrice').value=m.price||500; } }catch(e){} }
+async function savePlan(){ await db.collection("config").doc("plan").set({l1:+document.getElementById('planL1').value||100,l2:+document.getElementById('planL2').value||50,l3:+document.getElementById('planL3').value||25,price:+document.getElementById('planPrice').value||500}); alert("Plan save ✅"); }
+
+loadUsers();
+document.getElementById('banPhoto')?.addEventListener('change',function(e){
+  let f=e.target.files[0]; if(!f) return; let r=new FileReader(); r.onload=function(ev){ banPhotoData=ev.target.result; let p=document.getElementById('banPreview'); p.src=banPhotoData; p.style.display='block'; }; r.readAsDataURL(f);
+});
 </script>
-
-<!-- ===================== EDIT MODAL - WORKING ===================== -->
-<div id="editModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:100;align-items:center;justify-content:center;padding:12px">
-  <div class="card" style="width:100%;max-width:480px;max-height:90vh;overflow:auto">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <b>✏️ Edit User - REAL FIRESTORE UPDATE</b>
-      <button class="btn btn-dark" onclick="closeEdit()">✕</button>
-    </div>
-    <input type="hidden" id="eId">
-    <label style="font-size:11px;color:#94a3b8">Name</label><input id="eName">
-    <label style="font-size:11px;color:#94a3b8">Mobile</label><input id="eMobile">
-    <label style="font-size:11px;color:#94a3b8">GameID (7-digit)</label><input id="eGameId">
-    <label style="font-size:11px;color:#94a3b8">VoiceNo (7-digit)</label><input id="eVoiceNo">
-    <label style="font-size:11px;color:#94a3b8">Wallet ₹</label><input id="eWallet" type="number">
-    <label style="font-size:11px;color:#94a3b8">UPI ID</label><input id="eUpi">
-    <label style="font-size:11px;color:#94a3b8">Ref Code</label><input id="eRef">
-    <label style="font-size:11px;color:#94a3b8">Level</label><input id="eLevel" type="number">
-    <label style="font-size:11px;color:#94a3b8">XP</label><input id="eXp" type="number">
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <button class="btn btn-g" style="flex:1" onclick="saveEditReal()">💾 Save to Firebase</button>
-      <button class="btn btn-dark" onclick="closeEdit()">Cancel</button>
-    </div>
-    <small style="color:#fbbf24">Save karte hi Firestore me update hoga</small>
-  </div>
-</div>
-
 <script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
 </html>
